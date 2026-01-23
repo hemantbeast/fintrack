@@ -1,0 +1,19 @@
+{
+  "appName": "FinTrack",
+  "ok": "Ok",
+  "cancel": "Cancel",
+  "yes": "Yes",
+  "no": "No",
+  "exit": "Exit",
+  "submit": "Submit",
+  "success": "Success",
+  "pleaseWait": "Please wait",
+  "somethingWentWrong": "Something went wrong",
+  "somethingWentWrongDesc": "Please co-operate with us, we will fix it as soon as possible and update you.",
+  "noDataFound": "No data found",
+  "checkInternet": "Please check your internet connection and try again!",
+  "noInternet": "No Internet Available",
+  "sessionExpired": "Session expired! Please login again.",
+  "networkError": "Something went wrong! Please try again.",
+  "connectionTimedOut": "Connection timed out!"
+}
