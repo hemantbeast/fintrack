@@ -28,7 +28,7 @@ final _lightCustomTheme = CustomTheme(
   shimmerBaseColor: Colors.grey.shade300,
   shimmerHighlightColor: Colors.grey.shade100,
   navigationTitleStyle: defaultTextStyle(
-    color: Colors.black87,
+    color: Colors.white,
     fontSize: 18,
     fontWeight: FontWeight.w600,
   ),
@@ -65,7 +65,7 @@ final lightTheme = ThemeData(
   ),
   appBarTheme: AppBarTheme(
     backgroundColor: _lightColorScheme.primary,
-    systemOverlayStyle: SystemUiOverlayStyle.dark,
+    systemOverlayStyle: SystemUiOverlayStyle.light,
     shadowColor: _lightColorScheme.shadow.withValues(alpha: 0.2),
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(

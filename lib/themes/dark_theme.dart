@@ -32,7 +32,7 @@ final _darkCustomTheme = CustomTheme(
   shimmerBaseColor: Colors.grey.shade900,
   shimmerHighlightColor: Colors.grey.shade700,
   navigationTitleStyle: defaultTextStyle(
-    color: Colors.white70,
+    color: Colors.black87,
     fontSize: 18,
     fontWeight: FontWeight.w600,
   ),
@@ -69,7 +69,7 @@ final darkTheme = ThemeData(
   ),
   appBarTheme: AppBarTheme(
     backgroundColor: _darkColorScheme.primary,
-    systemOverlayStyle: SystemUiOverlayStyle.light,
+    systemOverlayStyle: SystemUiOverlayStyle.dark,
     shadowColor: _darkColorScheme.shadow.withValues(alpha: 0.2),
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(

@@ -26,5 +26,17 @@
   "onboarding3Description": "Take control of your financial future and build better money habits today",
   "skip": "Skip",
   "next": "Next",
-  "getStarted": "Get Started"
+  "getStarted": "Get Started",
+  "currentBalance": "Current Balance",
+  "income": "Income",
+  "expenses": "Expenses",
+  "budgetOverview": "Budget Overview",
+  "currencyConverter": "Currency Converter",
+  "quickActions": "Quick Actions",
+  "recentTransactions": "Recent Transactions",
+  "add": "Add",
+  "view": "View",
+  "budget": "Budget",
+  "stats": "Stats",
+  "viewAll": "View All"
 }

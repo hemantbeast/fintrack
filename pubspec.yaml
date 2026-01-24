@@ -153,12 +153,12 @@ flutter:
   fonts:
    - family: GoogleSansFlex
      fonts:
-       - asset: fonts/GoogleSansFlex-Regular.ttf
+       - asset: assets/fonts/GoogleSansFlex.ttf
    - family: Poppins
      fonts:
-       - asset: fonts/Poppins-SemiBold.ttf
+       - asset: assets/fonts/Poppins-SemiBold.ttf
          weight: 600
-       - asset: fonts/Poppins-Bold.ttf
+       - asset: assets/fonts/Poppins-Bold.ttf
          weight: 700
   #
   # For details regarding fonts from package dependencies,
