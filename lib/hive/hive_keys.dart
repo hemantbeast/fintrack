@@ -13,17 +13,24 @@ class HiveKeys {
 }
 
 enum HiveBoxes {
-  preferences('preferences'),
-  login('login')
+  preferences(boxName: 'preferences'),
+  login(boxName: 'login', key: 'LoginKey'),
+  balance(boxName: 'balance', key: 'BalanceKey'),
+  transactions(boxName: 'transactions', key: 'TransactionsKey'),
+  budgets(boxName: 'budgets', key: 'BudgetsKey')
   ;
 
-  const HiveBoxes(this.boxName);
+  const HiveBoxes({required this.boxName, this.key = ''});
 
   final String boxName;
 
+  final String key;
+
   static List<HiveBoxes> get logoutBoxes {
-    return <HiveBoxes>[
-      login, //mcf
-    ];
+    final list = HiveBoxes.values.where((e) {
+      return e != HiveBoxes.preferences;
+    }).toList();
+
+    return list;
   }
 }

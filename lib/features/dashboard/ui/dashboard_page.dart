@@ -15,7 +15,8 @@ class DashboardPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dashboardState = ref.watch(dashboardProvider);
+    final provider = ref.watch(dashboardProvider);
+    final notifier = ref.read(dashboardProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
@@ -35,37 +36,51 @@ class DashboardPage extends ConsumerWidget {
           ),
         ],
       ),
-      body: dashboardState.isLoading
-          ? const LoadingWidget()
-          : RefreshIndicator(
-              onRefresh: () async {
-                await ref.read(dashboardProvider.notifier).refresh();
-              },
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  spacing: 20,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Balance Card
-                    BalanceCard(balance: dashboardState.balance),
+      body: provider.screenData.when(
+        data: (data) {
+          return RefreshIndicator(
+            onRefresh: () async {
+              await notifier.refresh();
+            },
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                spacing: 20,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Balance Card
+                  BalanceCard(balance: data.balance),
 
-                    // Currency Converter
-                    const CurrencyConverterCard(),
+                  // Currency Converter
+                  const CurrencyConverterCard(),
 
-                    // Quick Actions
-                    const QuickActions(),
+                  // Quick Actions
+                  const QuickActions(),
 
-                    // Budget Overview
-                    BudgetOverview(budgets: dashboardState.budgets),
+                  // Budget Overview
+                  if (data.budgets.isEmpty) ...{
+                    const NoDataWidget(text: 'No budgets found'),
+                  } else ...{
+                    BudgetOverview(budgets: data.budgets),
+                  },
 
-                    // Recent Transactions
-                    RecentTransactions(transactions: dashboardState.recentTransactions),
-                  ],
-                ),
+                  // Recent Transactions
+                  if (data.recentTransactions.isEmpty) ...{
+                    const NoDataWidget(text: 'No recent transactions found'),
+                  } else ...{
+                    RecentTransactions(transactions: data.recentTransactions),
+                  },
+                ],
               ),
             ),
+          );
+        },
+        error: (error, stackTrace) {
+          return NoDataWidget(text: S.of(context).noDataFound);
+        },
+        loading: LoadingWidget.new,
+      ),
     );
   }
 }

@@ -78,7 +78,7 @@ class HiveStorage {
     return HiveAesCipher(encryptionKey);
   }
 
-  // Get the box, if it doesn't exist, then open the box.
+  /// Get the box, if it doesn't exist, then open the box.
   Future<Box<T>> getBox<T>(HiveBoxes boxEnum) async {
     if (!_boxes.containsKey(boxEnum)) {
       debugPrint('Box opening: ${boxEnum.boxName}');
@@ -97,31 +97,31 @@ class HiveStorage {
     return null;
   }
 
-  // Default get value for primitive data types
+  /// Default get value for primitive data types
   T? get<T>({required String key, T? defaultValue}) {
     final box = _getOpenBox<dynamic>(HiveBoxes.preferences);
     return box?.get(key, defaultValue: defaultValue) as T?;
   }
 
-  // Default put value for primitive data types
+  /// Default put value for primitive data types
   Future<void> put<T>({required String key, required T value}) async {
     final box = _getOpenBox<dynamic>(HiveBoxes.preferences);
     return box?.put(key, value);
   }
 
-  // Get all items from a box
+  /// Get all items from a box
   Future<List<T>> getAllItems<T>(HiveBoxes boxEnum) async {
     final box = await getBox<T>(boxEnum);
     return box.values.toList();
   }
 
-  // Get item by key
-  Future<T?> getItemByKey<T>(HiveBoxes boxEnum, String key) async {
+  /// Get item from a box by it's key
+  Future<T?> getItemByKey<T>(HiveBoxes boxEnum) async {
     final box = await getBox<T>(boxEnum);
-    return box.get(key);
+    return box.get(boxEnum.key);
   }
 
-  // Save a list of items to a box
+  /// Save a list of items to a box
   Future<void> saveAllItems<T>(HiveBoxes boxEnum, List<T> items, {required String Function(T item) keyExtractor}) async {
     final box = await getBox<T>(boxEnum);
     final entries = <String, T>{};
@@ -134,12 +134,13 @@ class HiveStorage {
     await box.putAll(entries);
   }
 
-  Future<void> saveItem<T>(HiveBoxes boxEnum, T item, {required String key}) async {
+  /// Save an item to a box using it's key
+  Future<void> saveItem<T>(HiveBoxes boxEnum, T item) async {
     final box = await getBox<T>(boxEnum);
-    await box.put(key, item);
+    await box.put(boxEnum.key, item);
   }
 
-  // Delete all items from box
+  /// Delete all items from box
   Future<void> deleteAllItems(HiveBoxes boxEnum) async {
     if (_boxes.containsKey(boxEnum)) {
       await _boxes[boxEnum]!.clear();
@@ -147,13 +148,13 @@ class HiveStorage {
     }
   }
 
-  // Delete a item from box
-  Future<void> deleteItem<T>(HiveBoxes boxEnum, {required String key}) async {
+  /// Delete a item from box using it's key
+  Future<void> deleteItem<T>(HiveBoxes boxEnum) async {
     final box = await getBox<T>(boxEnum);
-    return box.delete(key);
+    return box.delete(boxEnum.key);
   }
 
-  // Close a specific box
+  /// Close a specific box
   Future<void> closeBox(HiveBoxes boxEnum) async {
     if (_boxes.containsKey(boxEnum)) {
       await _boxes[boxEnum]!.close();
@@ -161,7 +162,7 @@ class HiveStorage {
     }
   }
 
-  // Close all boxes
+  /// Close all boxes
   Future<void> closeAllBoxes() async {
     for (final box in _boxes.values) {
       await box.close();
@@ -169,8 +170,8 @@ class HiveStorage {
     _boxes.clear();
   }
 
-  // Delete all box files from disk, except for preferences.
-  // This is useful when the we manually change the hive version.
+  /// Delete all box files from disk, except for preferences.
+  /// This is useful when the we manually change the hive version.
   static Future<void> deleteFiles() async {
     final boxes = HiveBoxes.values.where((e) => e != HiveBoxes.preferences).toList();
 
