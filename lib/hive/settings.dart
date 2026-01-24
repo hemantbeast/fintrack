@@ -7,6 +7,7 @@ class Settings {
 
   static void init(BuildContext context) {
     storage = context.readProvider(hiveStorageProvider);
+    storage.getBox<dynamic>(HiveBoxes.preferences);
   }
 
   // Access token

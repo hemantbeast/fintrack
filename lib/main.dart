@@ -1,9 +1,11 @@
 import 'package:fintrack/core/observers/provider_monitoring_observer.dart';
 import 'package:fintrack/fintrack_app.dart';
+import 'package:fintrack/hive/hive_registrar.g.dart';
 import 'package:fintrack/hive/index.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:stack_trace/stack_trace.dart' as stack_trace;
 
 void main() async {
@@ -35,7 +37,9 @@ void main() async {
   };
 
   // initialize hive storage
-  final hiveStorage = await HiveStorage.getInstance();
+  final hiveStorage = await HiveStorage.getInstance(
+    registerAdapters: Hive.registerAdapters,
+  );
 
   runApp(
     ProviderScope(

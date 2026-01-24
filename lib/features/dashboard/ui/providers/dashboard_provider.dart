@@ -28,7 +28,7 @@ final budgetsStreamProvider = StreamProvider<List<Budget>>((ref) {
 class DashboardNotifier extends Notifier<DashboardState> {
   @override
   DashboardState build() {
-    _listenStreamChanges();
+    Future<void>.delayed(Duration.zero, _listenStreamChanges);
     return DashboardState.initial();
   }
 
@@ -67,17 +67,11 @@ class DashboardNotifier extends Notifier<DashboardState> {
 
     // Safely extract values with fallbacks
     // Use .hasValue check before accessing .value to avoid throws
-    final balanceData = balance.hasValue
-        ? balance.value!
-        : Balance(currentBalance: 0, income: 0, expenses: 0);
+    final balanceData = balance.hasValue ? balance.value! : Balance(currentBalance: 0, income: 0, expenses: 0);
 
-    final transactionsData = transactions.hasValue
-        ? transactions.value!
-        : <Transaction>[];
+    final transactionsData = transactions.hasValue ? transactions.value! : <Transaction>[];
 
-    final budgetsData = budgets.hasValue
-        ? budgets.value!
-        : <Budget>[];
+    final budgetsData = budgets.hasValue ? budgets.value! : <Budget>[];
 
     return AsyncData(
       DashboardScreenData(

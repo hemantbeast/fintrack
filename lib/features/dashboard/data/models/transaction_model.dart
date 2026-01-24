@@ -23,7 +23,7 @@ class TransactionModel {
       category: entity.category,
       amount: entity.amount,
       date: entity.date,
-      type: entity.type,
+      type: entity.type == TransactionType.income ? 'income' : 'expense',
       emoji: entity.emoji,
     );
   }
@@ -48,10 +48,12 @@ class TransactionModel {
   final DateTime date;
 
   @JsonKey(name: 'type')
-  final TransactionType type;
+  final String type;
 
   @JsonKey(name: 'emoji')
   final String emoji;
+
+  TransactionType get typeEnum => type == 'income' ? TransactionType.income : TransactionType.expense;
 
   Transaction toEntity() {
     return Transaction(
@@ -60,7 +62,7 @@ class TransactionModel {
       category: category,
       amount: amount,
       date: date,
-      type: type,
+      type: typeEnum,
       emoji: emoji,
     );
   }
