@@ -20,6 +20,16 @@ class FintrackApp extends ConsumerStatefulWidget {
 
 class _FintrackAppState extends ConsumerState<FintrackApp> {
   @override
+  void initState() {
+    super.initState();
+
+    /// initialize settings
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Settings.init(context);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = ref.watch(themeProvider);
 
