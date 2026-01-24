@@ -1,10 +1,10 @@
-import 'package:fintrack/core/database/settings.dart';
-import 'package:fintrack/core/routes/app_router.dart';
-import 'package:fintrack/core/routes/route_enum.dart';
-import 'package:fintrack/core/themes/colors.dart';
 import 'package:fintrack/features/onboarding/providers/onboarding_provider.dart';
 import 'package:fintrack/features/onboarding/widgets/onboarding_widget.dart';
 import 'package:fintrack/generated/l10n.dart';
+import 'package:fintrack/hive/settings.dart';
+import 'package:fintrack/routes/app_router.dart';
+import 'package:fintrack/routes/route_enum.dart';
+import 'package:fintrack/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

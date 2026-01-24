@@ -1,4 +1,4 @@
-import 'package:fintrack/core/themes/colors.dart';
+import 'package:fintrack/themes/colors.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingWidget extends StatelessWidget {

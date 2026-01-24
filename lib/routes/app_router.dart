@@ -1,11 +1,11 @@
+import 'package:fintrack/core/extensions/widget_extensions.dart';
+import 'package:fintrack/generated/l10n.dart';
+import 'package:fintrack/routes/app_routes.dart';
+import 'package:fintrack/routes/route_enum.dart';
+import 'package:fintrack/widgets/app_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:navigation_history_observer/navigation_history_observer.dart';
-import 'package:fintrack/core/extensions/widget_extensions.dart';
-import 'package:fintrack/core/routes/app_routes.dart';
-import 'package:fintrack/core/routes/route_enum.dart';
-import 'package:fintrack/core/widgets/app_widgets.dart';
-import 'package:fintrack/generated/l10n.dart';
 
 class AppRouter {
   const AppRouter._();

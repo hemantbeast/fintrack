@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:fintrack/core/config/app_config.dart';
+import 'package:fintrack/config/app_config.dart';
 import 'package:flutter/foundation.dart';
 
 bool get isAndroid => Platform.isAndroid;

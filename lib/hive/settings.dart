@@ -1,5 +1,5 @@
-import 'package:fintrack/core/database/index.dart';
 import 'package:fintrack/core/extensions/context_extensions.dart';
+import 'package:fintrack/hive/index.dart';
 import 'package:flutter/widgets.dart';
 
 class Settings {

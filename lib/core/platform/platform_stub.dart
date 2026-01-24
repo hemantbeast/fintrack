@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:fintrack/core/config/app_config.dart';
+import 'package:fintrack/config/app_config.dart';
 
 bool get isAndroid => throw UnimplementedError('Platform not supported');
 

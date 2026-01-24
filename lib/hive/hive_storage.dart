@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:fintrack/core/constants/app_constants.dart';
-import 'package:fintrack/core/database/index.dart';
+import 'package:fintrack/constants/app_constants.dart';
 import 'package:fintrack/core/extensions/string_extensions.dart';
+import 'package:fintrack/hive/index.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,7 +32,7 @@ class HiveStorage {
     _sharedPref = await SharedPreferences.getInstance();
     _instance = HiveStorage._();
 
-    // Check & update database version
+    // Check & update hive version
     await _checkHiveVersion(onVersionChanged);
 
     _encryptionCipher = await _encryptionKey;

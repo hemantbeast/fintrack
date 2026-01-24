@@ -1,6 +1,6 @@
-import 'package:fintrack/core/database/index.dart';
 import 'package:fintrack/core/observers/provider_monitoring_observer.dart';
 import 'package:fintrack/fintrack_app.dart';
+import 'package:fintrack/hive/index.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

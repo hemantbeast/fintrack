@@ -1,8 +1,8 @@
-import 'package:fintrack/core/routes/app_router.dart';
-import 'package:fintrack/core/routes/route_enum.dart';
 import 'package:fintrack/core/utils/responsive.dart';
 import 'package:fintrack/generated/assets.dart';
 import 'package:fintrack/generated/l10n.dart';
+import 'package:fintrack/routes/app_router.dart';
+import 'package:fintrack/routes/route_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:navigation_history_observer/navigation_history_observer.dart';
