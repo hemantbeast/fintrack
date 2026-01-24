@@ -3,47 +3,51 @@ import 'package:fintrack/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-const _lightColorScheme = ColorScheme.light(
+const _darkColorScheme = ColorScheme.dark(
   primary: primaryColor,
-  primaryContainer: Color(0xFF8A84FF),
-  onPrimaryContainer: Color(0xFF1A0072),
+  onPrimary: Colors.white,
+  primaryContainer: Color(0xFF4E47CC),
+  onPrimaryContainer: Color(0xFFDFDCFF),
   secondary: secondaryColor,
-  secondaryContainer: Color(0xFF7BC67E),
-  onSecondaryContainer: Color(0xFF003A03),
+  onSecondary: Colors.white,
+  secondaryContainer: Color(0xFF388E3C),
+  onSecondaryContainer: Color(0xFFC8E6C9),
   tertiary: accentColor,
-  tertiaryContainer: Color(0xFFFF9999),
-  onTertiaryContainer: Color(0xFF5F0000),
+  onTertiary: Colors.white,
+  tertiaryContainer: Color(0xFFCC5555),
+  onTertiaryContainer: Color(0xFFFFDADA),
   error: errorColor,
-  surface: backgroundColor,
-  onSurface: textColor,
-  surfaceContainerHighest: Color(0xFFEBECF0),
-  outline: Color(0xFFDCDCE0),
+  onError: Colors.white,
+  surface: Color(0xFF1B1C1E),
+  onSurface: Color(0xFFE3E2E6),
+  surfaceContainerHighest: Color(0xFF3B3C3E),
+  outline: Color(0xFF5C5D60),
   shadow: Colors.black,
 );
 
-final _lightCustomTheme = CustomTheme(
-  blackWhiteColor: Colors.black87,
-  whiteBlackColor: Colors.white,
-  whiteBgColor: const Color(0xFFFDFCFA),
-  shimmerBaseColor: Colors.grey.shade300,
-  shimmerHighlightColor: Colors.grey.shade100,
+final _darkCustomTheme = CustomTheme(
+  blackWhiteColor: Colors.white70,
+  whiteBlackColor: Colors.black87,
+  whiteBgColor: const Color(0xFF1B1C1E),
+  shimmerBaseColor: Colors.grey.shade900,
+  shimmerHighlightColor: Colors.grey.shade700,
   navigationTitleStyle: defaultTextStyle(
-    color: Colors.black87,
+    color: Colors.white70,
     fontSize: 18,
     fontWeight: FontWeight.w600,
   ),
   blackTextStyle: defaultTextStyle(
-    color: Colors.black87,
+    color: Colors.white70,
     fontSize: 14,
     fontWeight: FontWeight.w400,
   ),
   grayTextStyle: defaultTextStyle(
-    color: gray98,
+    color: Colors.grey.shade400,
     fontSize: 14,
     fontWeight: FontWeight.w400,
   ),
   lightGrayTextStyle: defaultTextStyle(
-    color: grayF5,
+    color: Colors.grey.shade600,
     fontSize: 14,
     fontWeight: FontWeight.w400,
   ),
@@ -54,40 +58,40 @@ final _lightCustomTheme = CustomTheme(
   ),
 );
 
-final lightTheme = ThemeData(
+final darkTheme = ThemeData(
   useMaterial3: false,
-  colorScheme: _lightColorScheme,
-  extensions: [_lightCustomTheme],
+  colorScheme: _darkColorScheme,
+  extensions: [_darkCustomTheme],
   dividerTheme: DividerThemeData(
-    color: _lightColorScheme.outline,
+    color: _darkColorScheme.outline,
     space: 1,
     thickness: 0.75,
   ),
   appBarTheme: AppBarTheme(
-    backgroundColor: _lightColorScheme.primary,
-    systemOverlayStyle: SystemUiOverlayStyle.dark,
-    shadowColor: _lightColorScheme.shadow.withValues(alpha: 0.2),
+    backgroundColor: _darkColorScheme.primary,
+    systemOverlayStyle: SystemUiOverlayStyle.light,
+    shadowColor: _darkColorScheme.shadow.withValues(alpha: 0.2),
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: _lightColorScheme.primary,
+    backgroundColor: _darkColorScheme.primary,
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       elevation: 1,
-      backgroundColor: _lightColorScheme.primary,
-      foregroundColor: _lightColorScheme.onPrimary,
+      backgroundColor: _darkColorScheme.primary,
+      foregroundColor: _darkColorScheme.onPrimary,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
       textStyle: defaultTextStyle(
-        color: _lightColorScheme.onPrimary,
+        color: _darkColorScheme.onPrimary,
         fontSize: 15,
         fontWeight: FontWeight.w500,
       ),
     ),
   ),
   iconTheme: IconThemeData(
-    color: _lightColorScheme.onSurface,
+    color: _darkColorScheme.onSurface,
   ),
   inputDecorationTheme: InputDecorationTheme(
     border: OutlineInputBorder(
@@ -95,9 +99,9 @@ final lightTheme = ThemeData(
       borderRadius: BorderRadius.circular(10),
     ),
     filled: true,
-    fillColor: grayF5,
-    prefixIconColor: _lightColorScheme.onSurface,
-    suffixIconColor: _lightColorScheme.onSurface,
+    fillColor: gray33,
+    prefixIconColor: _darkColorScheme.onSurface,
+    suffixIconColor: _darkColorScheme.onSurface,
     contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
     constraints: const BoxConstraints(minHeight: 54),
     hintStyle: defaultTextStyle(
@@ -106,7 +110,7 @@ final lightTheme = ThemeData(
       fontWeight: FontWeight.w400,
     ),
     labelStyle: defaultTextStyle(
-      color: _lightColorScheme.onSurface,
+      color: _darkColorScheme.onSurface,
       fontSize: 16,
       fontWeight: FontWeight.w500,
     ),
@@ -115,15 +119,15 @@ final lightTheme = ThemeData(
     style: TextButton.styleFrom(
       elevation: 0,
       backgroundColor: Colors.transparent,
-      foregroundColor: _lightColorScheme.primary,
+      foregroundColor: _darkColorScheme.primary,
       minimumSize: const Size(50, 35),
       shadowColor: Colors.transparent,
       textStyle: defaultTextStyle(
-        color: _lightColorScheme.primary,
+        color: _darkColorScheme.primary,
         fontSize: 15,
         fontWeight: FontWeight.w500,
       ),
     ),
   ),
-  dialogTheme: DialogThemeData(backgroundColor: _lightColorScheme.onPrimary),
+  dialogTheme: DialogThemeData(backgroundColor: _darkColorScheme.onPrimary),
 );

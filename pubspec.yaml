@@ -78,6 +78,9 @@ dependencies:
   freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
 
+  # Theme
+  theme_tailor_annotation: ^3.1.2
+
   # UI
   fade_shimmer: ^2.4.0
   fluttertoast: ^9.0.0
@@ -116,6 +119,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   hive_ce_generator: ^1.11.1
   json_serializable: any
+  theme_tailor: ^3.1.2
   very_good_analysis: ^10.0.0
 
 # For information on the generic Dart part of this file, see the
@@ -146,17 +150,16 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
+  fonts:
+   - family: GoogleSansFlex
+     fonts:
+       - asset: fonts/GoogleSansFlex-Regular.ttf
+   - family: Poppins
+     fonts:
+       - asset: fonts/Poppins-SemiBold.ttf
+         weight: 600
+       - asset: fonts/Poppins-Bold.ttf
+         weight: 700
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

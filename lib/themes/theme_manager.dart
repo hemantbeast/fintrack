@@ -1,3 +1,4 @@
+import 'package:fintrack/themes/dark_theme.dart';
 import 'package:fintrack/themes/light_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,7 +25,7 @@ abstract class ThemeState with _$ThemeState {
 
   factory ThemeState.initial() => ThemeState(
     lightTheme: lightTheme,
-    darkTheme: ThemeData.dark(),
+    darkTheme: darkTheme,
     mode: ThemeMode.light,
   );
 }
