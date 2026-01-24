@@ -1,5 +1,6 @@
 enum RouteEnum {
   splashScreen('/splash'),
+  onboardingScreen('/onboarding'),
   dashboardScreen('/dashboard')
   ;
 

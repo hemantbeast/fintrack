@@ -1,6 +1,7 @@
 import 'package:fintrack/core/routes/base_routes.dart';
 import 'package:fintrack/core/routes/route_enum.dart';
 import 'package:fintrack/features/dashboard/ui/dashboard_page.dart';
+import 'package:fintrack/features/onboarding/onboarding_page.dart';
 import 'package:fintrack/features/splash/ui/splash_page.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,6 +16,14 @@ class AppRoutes with BaseRoutes {
       },
     ),
     /* Onboarding */
+    GoRoute(
+      path: RouteEnum.onboardingScreen.path,
+      name: RouteEnum.onboardingScreen.name,
+      pageBuilder: (context, state) {
+        return buildMaterialPage(key: state.pageKey, name: RouteEnum.onboardingScreen.name, child: const OnboardingPage());
+      },
+    ),
+    /* Dashboard */
     GoRoute(
       path: RouteEnum.dashboardScreen.path,
       name: RouteEnum.dashboardScreen.name,

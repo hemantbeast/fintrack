@@ -15,5 +15,16 @@
   "noInternet": "No Internet Available",
   "sessionExpired": "Session expired! Please login again.",
   "networkError": "Something went wrong! Please try again.",
-  "connectionTimedOut": "Connection timed out!"
+  "connectionTimedOut": "Connection timed out!",
+  "splashTagline": "Your Personal Finance Manager",
+  "version": "Version",
+  "onboarding1Title": "Track Your Finances",
+  "onboarding1Description": "Manage expenses and budget efficiently with our easy-to-use finance tracker",
+  "onboarding2Title": "Smart Budget Planning",
+  "onboarding2Description": "Set budgets, track spending, and get insights to achieve your financial goals",
+  "onboarding3Title": "Start Your Journey",
+  "onboarding3Description": "Take control of your financial future and build better money habits today",
+  "skip": "Skip",
+  "next": "Next",
+  "getStarted": "Get Started"
 }
