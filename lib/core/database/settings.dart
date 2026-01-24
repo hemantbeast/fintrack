@@ -26,4 +26,13 @@ class Settings {
   static set firebaseToken(String? value) {
     storage.put(key: HiveKeys.firebaseToken, value: value ?? '');
   }
+
+  // Onboarding shown
+  static bool get isOnboardingShown {
+    return storage.get<bool>(key: HiveKeys.isOnboardingShown) ?? false;
+  }
+
+  static set isOnboardingShown(bool value) {
+    storage.put(key: HiveKeys.isOnboardingShown, value: value);
+  }
 }

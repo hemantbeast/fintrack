@@ -3,6 +3,8 @@ class HiveKeys {
 
   static const String firebaseToken = 'FirebaseTokenKey';
 
+  static const String isOnboardingShown = 'IsOnboardingShown';
+
   static List<String> get logoutKeys {
     return <String>[
       accessToken,

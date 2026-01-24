@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-final themeManagerProvider = Provider<ThemeManager>((ref) {
-  return ThemeManager();
-});
+part 'theme_manager.freezed.dart';
 
-class ThemeManager extends Notifier<ThemeState> {
+final themeProvider = NotifierProvider<ThemeNotifier, ThemeState>(ThemeNotifier.new);
+
+class ThemeNotifier extends Notifier<ThemeState> {
   @override
   ThemeState build() {
     return ThemeState.initial();
