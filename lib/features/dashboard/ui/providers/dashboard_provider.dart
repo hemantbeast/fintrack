@@ -9,83 +9,110 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final dashboardProvider = NotifierProvider<DashboardNotifier, DashboardState>(DashboardNotifier.new);
 
-// Stream providers for each data type (cache-first with background refresh)
-final balanceStreamProvider = StreamProvider<Balance>((ref) {
-  final repository = ref.watch(dashboardRepositoryProvider);
-  return repository.watchBalance();
-});
-
-final transactionsStreamProvider = StreamProvider<List<Transaction>>((ref) {
-  final repository = ref.watch(dashboardRepositoryProvider);
-  return repository.watchTransactions();
-});
-
-final budgetsStreamProvider = StreamProvider<List<Budget>>((ref) {
-  final repository = ref.watch(dashboardRepositoryProvider);
-  return repository.watchBudgets();
-});
-
 class DashboardNotifier extends Notifier<DashboardState> {
+  StreamSubscription<Balance>? _balanceSubscription;
+  StreamSubscription<List<Transaction>>? _transactionsSubscription;
+  StreamSubscription<List<Budget>>? _budgetsSubscription;
+
+  Balance? _latestBalance;
+  List<Transaction>? _latestTransactions;
+  List<Budget>? _latestBudgets;
+
   @override
   DashboardState build() {
-    Future<void>.delayed(Duration.zero, _listenStreamChanges);
+    // Cleanup subscriptions when provider is disposed
+    ref.onDispose(() {
+      _balanceSubscription?.cancel();
+      _transactionsSubscription?.cancel();
+      _budgetsSubscription?.cancel();
+    });
+
+    // Start listening to streams
+    _setupStreams();
+
     return DashboardState.initial();
   }
 
-  void _listenStreamChanges() {
-    final balance = ref.watch(balanceStreamProvider);
-    final transactions = ref.watch(transactionsStreamProvider);
-    final budgets = ref.watch(budgetsStreamProvider);
+  void _setupStreams() {
+    final repository = ref.read(dashboardRepositoryProvider);
 
-    final screenData = _combineScreenData(balance, transactions, budgets);
-    state = state.copyWith(screenData: screenData);
+    // Listen to balance stream
+    _balanceSubscription = repository.watchBalance().listen(
+      (balance) {
+        _latestBalance = balance;
+        _updateState();
+      },
+      onError: (Object error) {
+        _updateStateWithError(error);
+      },
+    );
+
+    // Listen to transactions stream
+    _transactionsSubscription = repository.watchTransactions().listen(
+      (transactions) {
+        _latestTransactions = transactions;
+        _updateState();
+      },
+      onError: (error) {
+        // Ignore transaction errors if we have other data
+      },
+    );
+
+    // Listen to budgets stream
+    _budgetsSubscription = repository.watchBudgets().listen(
+      (budgets) {
+        _latestBudgets = budgets;
+        _updateState();
+      },
+      onError: (error) {
+        // Ignore budget errors if we have other data
+      },
+    );
   }
 
-  AsyncValue<DashboardScreenData> _combineScreenData(
-    AsyncValue<Balance> balance,
-    AsyncValue<List<Transaction>> transactions,
-    AsyncValue<List<Budget>> budgets,
-  ) {
-    final allProviders = [balance, transactions, budgets];
-
-    // Check if we have ANY data from any provider
-    final hasAnyData = allProviders.any((provider) => provider.hasValue);
-
-    // Show loading ONLY if ALL are loading AND no data yet
-    if (!hasAnyData) {
-      final allLoading = allProviders.every((provider) => provider.isLoading);
-      if (allLoading) {
-        return const AsyncLoading();
-      }
-
-      // All providers failed and no cached data available
-      final allHaveError = allProviders.every((provider) => provider.hasError);
-      if (allHaveError) {
-        return AsyncError(allProviders.first.error!, allProviders.first.stackTrace!);
-      }
+  void _updateState() {
+    // Only update if we have at least some data
+    if (_latestBalance == null && _latestTransactions == null && _latestBudgets == null) {
+      state = state.copyWith(screenData: const AsyncLoading());
+      return;
     }
 
-    // Safely extract values with fallbacks
-    // Use .hasValue check before accessing .value to avoid throws
-    final balanceData = balance.hasValue ? balance.value! : Balance(currentBalance: 0, income: 0, expenses: 0);
-
-    final transactionsData = transactions.hasValue ? transactions.value! : <Transaction>[];
-
-    final budgetsData = budgets.hasValue ? budgets.value! : <Budget>[];
-
-    return AsyncData(
-      DashboardScreenData(
-        balance: balanceData,
-        recentTransactions: transactionsData,
-        budgets: budgetsData,
+    state = state.copyWith(
+      screenData: AsyncData(
+        DashboardScreenData(
+          balance: _latestBalance ?? Balance(currentBalance: 0, income: 0, expenses: 0),
+          recentTransactions: _latestTransactions ?? [],
+          budgets: _latestBudgets ?? [],
+        ),
       ),
     );
   }
 
+  void _updateStateWithError(Object error, [StackTrace? stackTrace]) {
+    // If we have no data at all, show error
+    if (_latestBalance == null && _latestTransactions == null && _latestBudgets == null) {
+      state = state.copyWith(
+        screenData: AsyncError(error, stackTrace ?? StackTrace.current),
+      );
+    }
+    // Otherwise keep showing existing data
+  }
+
   Future<void> refresh() async {
-    // Invalidate all stream providers to trigger fresh data fetch
-    ref.invalidate(balanceStreamProvider);
-    ref.invalidate(transactionsStreamProvider);
-    ref.invalidate(budgetsStreamProvider);
+    // Cancel existing subscriptions
+    await _balanceSubscription?.cancel();
+    await _transactionsSubscription?.cancel();
+    await _budgetsSubscription?.cancel();
+
+    // Clear current data
+    _latestBalance = null;
+    _latestTransactions = null;
+    _latestBudgets = null;
+
+    // Show loading state
+    state = state.copyWith(screenData: const AsyncLoading());
+
+    // Re-setup streams to fetch fresh data
+    _setupStreams();
   }
 }
