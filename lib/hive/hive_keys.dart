@@ -18,6 +18,7 @@ enum HiveBoxes {
   balance(boxName: 'balance', key: 'BalanceKey'),
   transactions(boxName: 'transactions', key: 'TransactionsKey'),
   budgets(boxName: 'budgets', key: 'BudgetsKey'),
+  categories(boxName: 'categories', key: 'CategoriesKey'),
   exchangeRates(boxName: 'exchange_rates', key: 'ExchangeRatesKey')
   ;
 

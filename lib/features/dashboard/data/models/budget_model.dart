@@ -8,11 +8,11 @@ part 'budget_model.g.dart';
 @JsonSerializable()
 class BudgetModel extends HiveObject {
   BudgetModel({
-    required this.id,
-    required this.category,
-    required this.emoji,
-    required this.spent,
-    required this.limit,
+    this.id,
+    this.category,
+    this.emoji,
+    this.spent,
+    this.limit,
   });
 
   factory BudgetModel.fromEntity(Budget entity) {
@@ -30,27 +30,27 @@ class BudgetModel extends HiveObject {
   JSON toJson() => _$BudgetModelToJson(this);
 
   @JsonKey(name: 'id')
-  final String id;
+  String? id;
 
   @JsonKey(name: 'category')
-  final String category;
+  String? category;
 
   @JsonKey(name: 'emoji')
-  final String emoji;
+  String? emoji;
 
   @JsonKey(name: 'spent')
-  final double spent;
+  double? spent;
 
   @JsonKey(name: 'limit')
-  final double limit;
+  double? limit;
 
   Budget toEntity() {
     return Budget(
-      id: id,
-      category: category,
-      emoji: emoji,
-      spent: spent,
-      limit: limit,
+      id: id ?? '',
+      category: category ?? '',
+      emoji: emoji ?? '',
+      spent: spent ?? 0,
+      limit: limit ?? 0,
     );
   }
 }

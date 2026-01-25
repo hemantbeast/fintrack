@@ -5,6 +5,8 @@ import 'package:fintrack/features/dashboard/ui/widgets/currency_converter_card.d
 import 'package:fintrack/features/dashboard/ui/widgets/quick_actions.dart';
 import 'package:fintrack/features/dashboard/ui/widgets/recent_transactions.dart';
 import 'package:fintrack/generated/l10n.dart';
+import 'package:fintrack/routes/app_router.dart';
+import 'package:fintrack/routes/route_enum.dart';
 import 'package:fintrack/themes/custom_theme.dart';
 import 'package:fintrack/widgets/app_widgets.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +37,12 @@ class DashboardPage extends ConsumerWidget {
             onPressed: () {},
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          AppRouter.pushNamed(RouteEnum.addExpenseScreen.name);
+        },
+        child: const Icon(Icons.add),
       ),
       body: provider.screenData.when(
         data: (data) {
@@ -79,7 +87,7 @@ class DashboardPage extends ConsumerWidget {
         error: (error, stackTrace) {
           return NoDataWidget(text: S.of(context).noDataFound);
         },
-        loading: LoadingWidget.new,
+        loading: () => const LoadingWidget(),
       ),
     );
   }

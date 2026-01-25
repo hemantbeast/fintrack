@@ -39,5 +39,22 @@
   "budget": "Budget",
   "stats": "Stats",
   "viewAll": "View All",
-  "selectCurrency": "Select Currency"
+  "selectCurrency": "Select Currency",
+  "addExpense": "Add Expense",
+  "amount": "Amount",
+  "description": "Description",
+  "category": "Category",
+  "date": "Date",
+  "recurring": "Recurring",
+  "frequency": "Frequency",
+  "save": "Save",
+  "daily": "Daily",
+  "weekly": "Weekly",
+  "monthly": "Monthly",
+  "yearly": "Yearly",
+  "selectCategory": "Select Category",
+  "selectDate": "Select Date",
+  "enterAmount": "Enter amount",
+  "enterDescription": "Enter description",
+  "fillAllRequiredFields": "Please fill all required fields"
 }

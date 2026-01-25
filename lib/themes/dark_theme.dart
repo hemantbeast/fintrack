@@ -73,6 +73,7 @@ final darkTheme = ThemeData(
     shadowColor: _darkColorScheme.shadow.withValues(alpha: 0.2),
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
+    foregroundColor: _darkColorScheme.onPrimary,
     backgroundColor: _darkColorScheme.primary,
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(

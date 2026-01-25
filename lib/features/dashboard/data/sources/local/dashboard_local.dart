@@ -40,7 +40,7 @@ class DashboardLocal {
     await _storage.saveAllItems<TransactionModel>(
       HiveBoxes.transactions,
       transactions,
-      keyExtractor: (item) => item.id,
+      keyExtractor: (item) => item.id ?? '',
     );
   }
 
@@ -55,7 +55,7 @@ class DashboardLocal {
     await _storage.saveAllItems<BudgetModel>(
       HiveBoxes.budgets,
       budgets,
-      keyExtractor: (item) => item.id,
+      keyExtractor: (item) => item.id ?? '',
     );
   }
 
