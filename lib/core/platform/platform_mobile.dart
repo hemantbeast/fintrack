@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:fintrack/config/app_config.dart';
 import 'package:flutter/foundation.dart';
 
 bool get isAndroid => Platform.isAndroid;
@@ -21,7 +20,6 @@ class DioFactory {
 
   DioFactory._constructor() {
     final options = BaseOptions(
-      baseUrl: AppConfig.baseUrl,
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 40),
       sendTimeout: const Duration(seconds: 30),
@@ -41,10 +39,6 @@ class DioFactory {
   late final Dio instance;
 
   static final DioFactory _instance = DioFactory._constructor();
-
-  void updateBaseUrl() {
-    instance.options.baseUrl = AppConfig.baseUrl;
-  }
 }
 
 /// Create logging interceptor for debug mode

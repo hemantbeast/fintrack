@@ -5,6 +5,7 @@ import 'package:fintrack/features/dashboard/data/sources/remote/dashboard_servic
 import 'package:fintrack/features/dashboard/domain/entities/balance.dart';
 import 'package:fintrack/features/dashboard/domain/entities/budget.dart';
 import 'package:fintrack/features/dashboard/domain/entities/currency_rate.dart';
+import 'package:fintrack/features/dashboard/domain/entities/exchange_rates.dart';
 import 'package:fintrack/features/dashboard/domain/entities/transaction.dart';
 import 'package:fintrack/features/dashboard/domain/repositories/dashboard_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -101,10 +102,60 @@ class DashboardRepositoryImpl implements DashboardRepository {
     }
   }
 
-  // Currency Rate (synchronous, no caching needed for simple conversions)
+  // Cached exchange rates for synchronous access
+  ExchangeRates? _cachedExchangeRates;
+
+  /// Get exchange rates with stale-while-revalidate strategy
+  /// Cache is valid for 24 hours
+  @override
+  Stream<ExchangeRates> watchExchangeRates({String baseCurrency = 'USD'}) async* {
+    // Get cached data from local storage
+    final cachedRates = await local.getExchangeRates();
+
+    if (cachedRates != null) {
+      final entity = cachedRates.toEntity();
+      _cachedExchangeRates = entity;
+      yield entity;
+
+      // If cache is still valid (less than 24 hours), don't fetch new data
+      if (entity.isValid) {
+        return;
+      }
+    }
+
+    try {
+      // Fetch fresh data from API
+      final freshRates = await service.getExchangeRates(
+        baseCurrency: baseCurrency,
+      );
+      await local.saveExchangeRates(freshRates);
+
+      final entity = freshRates.toEntity();
+      _cachedExchangeRates = entity;
+
+      // Yield fresh data
+      yield entity;
+    } on Exception catch (_) {
+      // Only throw error if no cached data available
+      if (cachedRates == null) {
+        rethrow;
+      }
+    }
+  }
+
+  /// Get currency rate from cached exchange rates
   @override
   CurrencyRate getCurrencyRate({required String from, required String to}) {
-    // Mock rates
+    // Use cached exchange rates if available
+    if (_cachedExchangeRates != null && _cachedExchangeRates!.baseCurrency == from) {
+      return CurrencyRate(
+        fromCurrency: from,
+        toCurrency: to,
+        rate: _cachedExchangeRates!.getRate(to),
+      );
+    }
+
+    // Fallback to hardcoded rates if cache not available or base doesn't match
     final rates = {
       'USD-EUR': 0.92,
       'USD-GBP': 0.79,

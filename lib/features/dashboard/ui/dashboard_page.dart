@@ -53,7 +53,7 @@ class DashboardPage extends ConsumerWidget {
                   BalanceCard(balance: data.balance),
 
                   // Currency Converter
-                  const CurrencyConverterCard(),
+                  CurrencyConverterCard(exchangeRates: data.exchangeRates),
 
                   // Quick Actions
                   const QuickActions(),

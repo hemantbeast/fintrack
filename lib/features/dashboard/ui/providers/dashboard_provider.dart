@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:fintrack/features/dashboard/data/repositories/dashboard_repository_impl.dart';
 import 'package:fintrack/features/dashboard/domain/entities/balance.dart';
 import 'package:fintrack/features/dashboard/domain/entities/budget.dart';
+import 'package:fintrack/features/dashboard/domain/entities/exchange_rates.dart';
 import 'package:fintrack/features/dashboard/domain/entities/transaction.dart';
 import 'package:fintrack/features/dashboard/ui/states/dashboard_state.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final dashboardProvider = NotifierProvider<DashboardNotifier, DashboardState>(DashboardNotifier.new);
@@ -13,10 +15,12 @@ class DashboardNotifier extends Notifier<DashboardState> {
   StreamSubscription<Balance>? _balanceSubscription;
   StreamSubscription<List<Transaction>>? _transactionsSubscription;
   StreamSubscription<List<Budget>>? _budgetsSubscription;
+  StreamSubscription<ExchangeRates>? _exchangeRatesSubscription;
 
   Balance? _latestBalance;
   List<Transaction>? _latestTransactions;
   List<Budget>? _latestBudgets;
+  ExchangeRates? _latestExchangeRates;
 
   @override
   DashboardState build() {
@@ -25,6 +29,7 @@ class DashboardNotifier extends Notifier<DashboardState> {
       _balanceSubscription?.cancel();
       _transactionsSubscription?.cancel();
       _budgetsSubscription?.cancel();
+      _exchangeRatesSubscription?.cancel();
     });
 
     // Start listening to streams
@@ -68,6 +73,19 @@ class DashboardNotifier extends Notifier<DashboardState> {
         // Ignore budget errors if we have other data
       },
     );
+
+    // Listen to exchange rates stream
+    _exchangeRatesSubscription = repository.watchExchangeRates().listen(
+      (rates) {
+        _latestExchangeRates = rates;
+        _updateState();
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        // Log exchange rate errors for debugging
+        debugPrint('Exchange rate error: $error');
+        debugPrint('Stack trace: $stackTrace');
+      },
+    );
   }
 
   void _updateState() {
@@ -83,6 +101,7 @@ class DashboardNotifier extends Notifier<DashboardState> {
           balance: _latestBalance ?? Balance(currentBalance: 0, income: 0, expenses: 0),
           recentTransactions: _latestTransactions ?? [],
           budgets: _latestBudgets ?? [],
+          exchangeRates: _latestExchangeRates,
         ),
       ),
     );
@@ -103,11 +122,13 @@ class DashboardNotifier extends Notifier<DashboardState> {
     await _balanceSubscription?.cancel();
     await _transactionsSubscription?.cancel();
     await _budgetsSubscription?.cancel();
+    await _exchangeRatesSubscription?.cancel();
 
     // Clear current data
     _latestBalance = null;
     _latestTransactions = null;
     _latestBudgets = null;
+    _latestExchangeRates = null;
 
     // Show loading state
     state = state.copyWith(screenData: const AsyncLoading());

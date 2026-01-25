@@ -1,5 +1,6 @@
 import 'package:fintrack/features/dashboard/domain/entities/balance.dart';
 import 'package:fintrack/features/dashboard/domain/entities/budget.dart';
+import 'package:fintrack/features/dashboard/domain/entities/exchange_rates.dart';
 import 'package:fintrack/features/dashboard/domain/entities/transaction.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -22,21 +23,25 @@ class DashboardScreenData {
     required this.balance,
     required this.recentTransactions,
     required this.budgets,
+    this.exchangeRates,
   });
 
   final Balance balance;
   final List<Transaction> recentTransactions;
   final List<Budget> budgets;
+  final ExchangeRates? exchangeRates;
 
   DashboardScreenData copyWith({
     Balance? balance,
     List<Transaction>? recentTransactions,
     List<Budget>? budgets,
+    ExchangeRates? exchangeRates,
   }) {
     return DashboardScreenData(
       balance: balance ?? this.balance,
       recentTransactions: recentTransactions ?? this.recentTransactions,
       budgets: budgets ?? this.budgets,
+      exchangeRates: exchangeRates ?? this.exchangeRates,
     );
   }
 }

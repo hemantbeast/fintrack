@@ -1,5 +1,6 @@
 import 'package:fintrack/features/dashboard/data/models/balance_model.dart';
 import 'package:fintrack/features/dashboard/data/models/budget_model.dart';
+import 'package:fintrack/features/dashboard/data/models/exchange_rate_model.dart';
 import 'package:fintrack/features/dashboard/data/models/transaction_model.dart';
 import 'package:fintrack/hive/index.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,6 +56,22 @@ class DashboardLocal {
       HiveBoxes.budgets,
       budgets,
       keyExtractor: (item) => item.id,
+    );
+  }
+
+  /// Get cached exchange rates
+  Future<ExchangeRateModel?> getExchangeRates() async {
+    final rates = await _storage.getItemByKey<ExchangeRateModel>(
+      HiveBoxes.exchangeRates,
+    );
+    return rates;
+  }
+
+  /// Save exchange rates to local storage
+  Future<void> saveExchangeRates(ExchangeRateModel rates) async {
+    await _storage.saveItem<ExchangeRateModel>(
+      HiveBoxes.exchangeRates,
+      rates,
     );
   }
 }

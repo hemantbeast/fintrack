@@ -38,5 +38,6 @@
   "view": "View",
   "budget": "Budget",
   "stats": "Stats",
-  "viewAll": "View All"
+  "viewAll": "View All",
+  "selectCurrency": "Select Currency"
 }
