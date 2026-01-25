@@ -1,4 +1,7 @@
 import 'package:fintrack/core/routes/base_routes.dart';
+import 'package:fintrack/features/budget/ui/add_budget_page.dart';
+import 'package:fintrack/features/budget/ui/budget_planning_page.dart';
+import 'package:fintrack/features/dashboard/domain/entities/budget.dart';
 import 'package:fintrack/features/dashboard/ui/all_transactions_page.dart';
 import 'package:fintrack/features/dashboard/ui/dashboard_page.dart';
 import 'package:fintrack/features/expenses/ui/add_expense_page.dart';
@@ -66,6 +69,31 @@ class AppRoutes with BaseRoutes {
           key: state.pageKey,
           name: RouteEnum.allTransactionsScreen.name,
           child: const AllTransactionsPage(),
+        );
+      },
+    ),
+    /* Budget Planning */
+    GoRoute(
+      path: RouteEnum.budgetPlanningScreen.path,
+      name: RouteEnum.budgetPlanningScreen.name,
+      pageBuilder: (context, state) {
+        return buildMaterialPage(
+          key: state.pageKey,
+          name: RouteEnum.budgetPlanningScreen.name,
+          child: const BudgetPlanningPage(),
+        );
+      },
+    ),
+    /* Add/Edit Budget */
+    GoRoute(
+      path: RouteEnum.addBudgetScreen.path,
+      name: RouteEnum.addBudgetScreen.name,
+      pageBuilder: (context, state) {
+        final budget = state.extra as Budget?;
+        return buildMaterialPage(
+          key: state.pageKey,
+          name: RouteEnum.addBudgetScreen.name,
+          child: AddBudgetPage(budget: budget),
         );
       },
     ),

@@ -1,4 +1,5 @@
 import 'package:fintrack/core/extensions/date_time_extension.dart';
+import 'package:fintrack/core/extensions/widget_extensions.dart';
 import 'package:fintrack/features/expenses/ui/providers/add_expense_provider.dart';
 import 'package:fintrack/features/expenses/ui/states/add_expense_state.dart';
 import 'package:fintrack/generated/l10n.dart';
@@ -200,7 +201,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
             const SizedBox(height: 20),
 
             // Error Message
-            if (state.errorMessage != null) ...[
+            if (state.errorMessage?.isNotEmpty ?? false) ...[
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
@@ -214,24 +215,26 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
               ),
               const SizedBox(height: 20),
             ],
-
-            // Save Button
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: state.isLoading ? null : notifier.saveExpense,
-                child: state.isLoading
-                    ? const SizedBox(
-                        height: 24,
-                        width: 24,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : Text(l10n.save),
-              ),
-            ),
           ],
         ),
       ),
+      // Save Button
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: SizedBox(
+          height: 50,
+          child: ElevatedButton(
+            onPressed: state.isLoading ? null : notifier.saveExpense,
+            child: state.isLoading
+                ? const SizedBox(
+                    height: 24,
+                    width: 24,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Text(l10n.save),
+          ),
+        ),
+      ).applySafeArea(),
     );
   }
 

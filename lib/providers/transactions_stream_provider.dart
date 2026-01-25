@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fintrack/features/dashboard/data/models/transaction_model.dart';
+import 'package:fintrack/features/dashboard/data/repositories/dashboard_repository_impl.dart';
 import 'package:fintrack/features/dashboard/domain/entities/balance.dart';
 import 'package:fintrack/features/dashboard/domain/entities/transaction.dart';
 import 'package:fintrack/hive/hive_keys.dart';
@@ -15,22 +16,35 @@ final transactionsStreamProvider = NotifierProvider<TransactionsStreamNotifier, 
 
 class TransactionsStreamNotifier extends Notifier<AsyncValue<List<Transaction>>> {
   late HiveStorage _storage;
+  StreamSubscription<List<Transaction>>? _transactionsSubscription;
 
   @override
   AsyncValue<List<Transaction>> build() {
     _storage = ref.read(hiveStorageProvider);
-    _loadTransactions();
+
+    // Setup subscription to repository stream for stale-while-revalidate
+    _setupStream();
+
+    // Cleanup when provider is disposed
+    ref.onDispose(() {
+      _transactionsSubscription?.cancel();
+    });
+
     return const AsyncLoading();
   }
 
-  Future<void> _loadTransactions() async {
-    try {
-      final models = await _storage.getAllItems<TransactionModel>(HiveBoxes.transactions);
-      final transactions = models.map((m) => m.toEntity()).toList()..sort((a, b) => b.date.compareTo(a.date)); // Sort by date descending
-      state = AsyncData(transactions);
-    } on Exception catch (e, st) {
-      state = AsyncError(e, st);
-    }
+  void _setupStream() {
+    final repository = ref.read(dashboardRepositoryProvider);
+
+    _transactionsSubscription = repository.watchTransactions().listen(
+      (transactions) {
+        final sortedTransactions = transactions..sort((a, b) => b.date.compareTo(a.date));
+        state = AsyncData(sortedTransactions);
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        state = AsyncError(error, stackTrace);
+      },
+    );
   }
 
   /// Add a new transaction and notify all listeners
@@ -59,10 +73,14 @@ class TransactionsStreamNotifier extends Notifier<AsyncValue<List<Transaction>>>
     state = AsyncData(updatedTransactions);
   }
 
-  /// Refresh transactions from storage
+  /// Refresh transactions from repository (fetches fresh data with stale-while-revalidate)
   Future<void> refresh() async {
+    // Cancel current subscription and create a new one
+    // This will trigger a fresh fetch from the repository
+    await _transactionsSubscription?.cancel();
+
     state = const AsyncLoading();
-    await _loadTransactions();
+    _setupStream();
   }
 
   /// Get computed balance from transactions

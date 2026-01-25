@@ -1,5 +1,7 @@
 import 'package:fintrack/core/extensions/context_extensions.dart';
 import 'package:fintrack/generated/l10n.dart';
+import 'package:fintrack/routes/app_router.dart';
+import 'package:fintrack/routes/route_enum.dart';
 import 'package:fintrack/themes/colors.dart';
 import 'package:fintrack/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +29,9 @@ class QuickActions extends StatelessWidget {
                 icon: Icons.add,
                 label: S.of(context).add,
                 color: primaryColor,
-                onTap: () {},
+                onTap: () {
+                  AppRouter.pushNamed(RouteEnum.addExpenseScreen.name);
+                },
               ),
             ),
             const SizedBox(width: 12),
@@ -36,7 +40,9 @@ class QuickActions extends StatelessWidget {
                 icon: Icons.bar_chart,
                 label: S.of(context).view,
                 color: secondaryColor,
-                onTap: () {},
+                onTap: () {
+                  AppRouter.pushNamed(RouteEnum.allTransactionsScreen.name);
+                },
               ),
             ),
             const SizedBox(width: 12),
@@ -45,7 +51,9 @@ class QuickActions extends StatelessWidget {
                 icon: Icons.account_balance_wallet,
                 label: S.of(context).budget,
                 color: const Color(0xFFFF9800),
-                onTap: () {},
+                onTap: () {
+                  AppRouter.pushNamed(RouteEnum.budgetPlanningScreen.name);
+                },
               ),
             ),
             const SizedBox(width: 12),
@@ -54,7 +62,9 @@ class QuickActions extends StatelessWidget {
                 icon: Icons.trending_up,
                 label: S.of(context).stats,
                 color: accentColor,
-                onTap: () {},
+                onTap: () {
+                  // TODO: Navigate to stats screen
+                },
               ),
             ),
           ],

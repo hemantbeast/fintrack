@@ -96,16 +96,6 @@ class DashboardNotifier extends Notifier<DashboardState> {
     );
   }
 
-  void _updateStateWithError(Object error, [StackTrace? stackTrace]) {
-    // If we have no data at all, show error
-    if (_latestTransactions == null && _latestBudgets == null) {
-      state = state.copyWith(
-        screenData: AsyncError(error, stackTrace ?? StackTrace.current),
-      );
-    }
-    // Otherwise keep showing existing data
-  }
-
   Future<void> refresh() async {
     // Cancel existing subscriptions
     await _budgetsSubscription?.cancel();

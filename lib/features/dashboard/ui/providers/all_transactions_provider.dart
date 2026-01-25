@@ -13,26 +13,28 @@ class AllTransactionsNotifier extends Notifier<AllTransactionsState> {
   @override
   AllTransactionsState build() {
     // Listen to shared transactions provider for reactive updates
-    Future.delayed(Duration.zero, () {
-      ref.listen<AsyncValue<List<Transaction>>>(
-        transactionsStreamProvider,
-        (previous, next) {
-          next.when(
-            data: (transactions) {
-              _allTransactions = transactions;
-              _updateState();
-            },
-            loading: () {
+    ref.listen<AsyncValue<List<Transaction>>>(
+      transactionsStreamProvider,
+      (previous, next) {
+        next.when(
+          data: (transactions) {
+            _allTransactions = transactions;
+            Future.microtask(_updateState);
+          },
+          loading: () {
+            Future.microtask(() {
               state = state.copyWith(transactions: const AsyncLoading());
-            },
-            error: (error, stack) {
+            });
+          },
+          error: (error, stack) {
+            Future.microtask(() {
               state = state.copyWith(transactions: AsyncError(error, stack));
-            },
-          );
-        },
-        fireImmediately: true,
-      );
-    });
+            });
+          },
+        );
+      },
+      fireImmediately: true,
+    );
 
     return AllTransactionsState.initial();
   }

@@ -4,6 +4,8 @@ enum RouteEnum {
   dashboardScreen('/dashboard'),
   addExpenseScreen('/add-expense'),
   allTransactionsScreen('/all-transactions'),
+  budgetPlanningScreen('/budget-planning'),
+  addBudgetScreen('/add-budget'),
   ;
 
   const RouteEnum(this.path);
