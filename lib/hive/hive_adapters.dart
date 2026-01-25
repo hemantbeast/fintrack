@@ -1,7 +1,7 @@
 import 'package:fintrack/features/dashboard/data/models/balance_model.dart';
-import 'package:fintrack/features/dashboard/data/models/budget_model.dart';
 import 'package:fintrack/features/dashboard/data/models/exchange_rate_model.dart';
 import 'package:fintrack/features/dashboard/data/models/transaction_model.dart';
+import 'package:fintrack/features/budget/data/models/budget_model.dart';
 import 'package:fintrack/features/expenses/data/models/category_model.dart';
 import 'package:hive_ce/hive_ce.dart';
 

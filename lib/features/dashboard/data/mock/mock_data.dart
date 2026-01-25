@@ -55,29 +55,3 @@ const String transactionsMockJson = '''
   }
 ]
 ''';
-
-const String budgetsMockJson = '''
-[
-  {
-    "id": "1",
-    "category": "Food",
-    "emoji": "🍔",
-    "spent": 450.00,
-    "limit": 600.00
-  },
-  {
-    "id": "2",
-    "category": "Transport",
-    "emoji": "🚗",
-    "spent": 240.00,
-    "limit": 400.00
-  },
-  {
-    "id": "3",
-    "category": "Entertainment",
-    "emoji": "🎮",
-    "spent": 135.00,
-    "limit": 300.00
-  }
-]
-''';

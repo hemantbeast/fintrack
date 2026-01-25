@@ -1,8 +1,8 @@
 import 'package:fintrack/core/extensions/context_extensions.dart';
+import 'package:fintrack/features/budget/domain/entities/budget.dart';
 import 'package:fintrack/features/budget/ui/providers/budget_planning_provider.dart';
-import 'package:fintrack/features/dashboard/domain/entities/budget.dart';
+import 'package:fintrack/features/budget/ui/states/budget_planning_state.dart';
 import 'package:fintrack/generated/l10n.dart';
-import 'package:fintrack/providers/budgets_stream_provider.dart';
 import 'package:fintrack/routes/app_router.dart';
 import 'package:fintrack/routes/route_enum.dart';
 import 'package:fintrack/themes/colors.dart';

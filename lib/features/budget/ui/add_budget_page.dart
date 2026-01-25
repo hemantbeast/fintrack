@@ -1,7 +1,7 @@
 import 'package:fintrack/core/extensions/context_extensions.dart';
 import 'package:fintrack/core/extensions/widget_extensions.dart';
+import 'package:fintrack/features/budget/domain/entities/budget.dart';
 import 'package:fintrack/features/budget/ui/providers/add_budget_provider.dart';
-import 'package:fintrack/features/dashboard/domain/entities/budget.dart';
 import 'package:fintrack/generated/l10n.dart';
 import 'package:fintrack/routes/app_router.dart';
 import 'package:fintrack/themes/custom_theme.dart';

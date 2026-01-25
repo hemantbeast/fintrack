@@ -1,7 +1,8 @@
-import 'package:fintrack/features/dashboard/data/models/budget_model.dart';
-import 'package:fintrack/features/dashboard/domain/entities/budget.dart';
-import 'package:fintrack/hive/hive_keys.dart';
-import 'package:fintrack/hive/hive_storage.dart';
+import 'dart:async';
+
+import 'package:fintrack/features/budget/data/repositories/budget_repository_impl.dart';
+import 'package:fintrack/features/budget/domain/entities/budget.dart';
+import 'package:fintrack/features/budget/ui/states/budget_planning_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// A shared notifier that provides reactive budget updates across the app.
@@ -11,72 +12,57 @@ final budgetsStreamProvider = NotifierProvider<BudgetsStreamNotifier, AsyncValue
 );
 
 class BudgetsStreamNotifier extends Notifier<AsyncValue<List<Budget>>> {
-  late HiveStorage _storage;
+  StreamSubscription<List<Budget>>? _budgetSubscription;
+  List<Budget>? _latestBudgets;
 
   @override
   AsyncValue<List<Budget>> build() {
-    _storage = ref.read(hiveStorageProvider);
-    _loadBudgets();
+    // Setup the repository stream
+    _setupStream();
     return const AsyncLoading();
   }
 
-  Future<void> _loadBudgets() async {
-    try {
-      final models = await _storage.getAllItems<BudgetModel>(HiveBoxes.budgets);
-      final budgets = models.map((m) => m.toEntity()).toList()..sort((a, b) => b.percentage.compareTo(a.percentage));
+  void _setupStream() {
+    final repository = ref.read(budgetRepositoryProvider);
 
-      state = AsyncData(budgets);
-    } on Exception catch (e, st) {
-      state = AsyncError(e, st);
-    }
+    _budgetSubscription = repository.watchBudgets().listen(
+      (budgets) {
+        _latestBudgets = budgets..sort((a, b) => b.percentage.compareTo(a.percentage));
+        state = AsyncData(_latestBudgets!);
+      },
+      onError: (Object error, StackTrace stack) {
+        state = AsyncError(error, stack);
+      },
+    );
+
+    ref.onDispose(() => _budgetSubscription?.cancel());
   }
 
   /// Add or update a budget and notify all listeners
   Future<void> saveBudget(Budget budget) async {
-    final model = BudgetModel.fromEntity(budget);
-
-    await _storage.saveAllItems<BudgetModel>(
-      HiveBoxes.budgets,
-      [model],
-      keyExtractor: (item) => item.id ?? '',
-    );
-
-    // Update state with new/updated budget
-    final currentBudgets = state.hasValue ? state.value! : <Budget>[];
-    final existingIndex = currentBudgets.indexWhere((b) => b.id == budget.id);
-
-    List<Budget> updatedBudgets;
-    if (existingIndex >= 0) {
-      updatedBudgets = [...currentBudgets];
-      updatedBudgets[existingIndex] = budget;
-    } else {
-      updatedBudgets = [budget, ...currentBudgets];
-    }
-
-    updatedBudgets.sort((a, b) => b.percentage.compareTo(a.percentage));
-    state = AsyncData(updatedBudgets);
+    final repository = ref.read(budgetRepositoryProvider);
+    await repository.saveBudget(budget);
+    // Stream will automatically update
   }
 
   /// Delete a budget and notify all listeners
   Future<void> deleteBudget(String budgetId) async {
-    final box = await _storage.getBox<BudgetModel>(HiveBoxes.budgets);
-    await box.delete(budgetId);
-
-    // Update state without deleted budget
-    final currentBudgets = state.hasValue ? state.value! : <Budget>[];
-    final updatedBudgets = currentBudgets.where((b) => b.id != budgetId).toList();
-    state = AsyncData(updatedBudgets);
+    final repository = ref.read(budgetRepositoryProvider);
+    await repository.deleteBudget(budgetId);
+    // Stream will automatically update
   }
 
-  /// Refresh budgets from storage
+  /// Refresh budgets from repository
   Future<void> refresh() async {
+    // Cancel and restart subscription to trigger fresh fetch
+    await _budgetSubscription?.cancel();
     state = const AsyncLoading();
-    await _loadBudgets();
+    _setupStream();
   }
 
   /// Get total budget stats
   BudgetStats computeStats() {
-    final budgets = state.hasValue ? state.value! : <Budget>[];
+    final budgets = _latestBudgets ?? [];
 
     double totalSpent = 0;
     double totalLimit = 0;
@@ -92,18 +78,4 @@ class BudgetsStreamNotifier extends Notifier<AsyncValue<List<Budget>>> {
       percentage: totalLimit > 0 ? (totalSpent / totalLimit * 100) : 0,
     );
   }
-}
-
-class BudgetStats {
-  const BudgetStats({
-    required this.totalSpent,
-    required this.totalLimit,
-    required this.percentage,
-  });
-
-  final double totalSpent;
-  final double totalLimit;
-  final double percentage;
-
-  double get remaining => (totalLimit - totalSpent).clamp(0, totalLimit);
 }

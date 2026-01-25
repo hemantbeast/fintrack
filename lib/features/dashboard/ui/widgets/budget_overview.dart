@@ -1,5 +1,5 @@
 import 'package:fintrack/core/extensions/context_extensions.dart';
-import 'package:fintrack/features/dashboard/domain/entities/budget.dart';
+import 'package:fintrack/features/budget/domain/entities/budget.dart';
 import 'package:fintrack/generated/l10n.dart';
 import 'package:fintrack/themes/colors.dart';
 import 'package:fintrack/themes/custom_theme.dart';

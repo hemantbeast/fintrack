@@ -8,7 +8,6 @@ import 'package:fintrack/core/utils/json_utils.dart';
 import 'package:fintrack/core/utils/typedefs.dart';
 import 'package:fintrack/features/dashboard/data/mock/mock_data.dart';
 import 'package:fintrack/features/dashboard/data/models/balance_model.dart';
-import 'package:fintrack/features/dashboard/data/models/budget_model.dart';
 import 'package:fintrack/features/dashboard/data/models/exchange_rate_model.dart';
 import 'package:fintrack/features/dashboard/data/models/transaction_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,13 +32,6 @@ class DashboardService with ApiNetwork {
     await Future<void>.delayed(const Duration(milliseconds: 300));
     final jsonList = json.decode(transactionsMockJson) as List<dynamic>;
     return jsonList.map((json) => TransactionModel.fromJson(json as JSON)).toList();
-  }
-
-  /// Fetches budgets data from API
-  Future<List<BudgetModel>> getBudgets() async {
-    await Future<void>.delayed(const Duration(milliseconds: 250));
-    final jsonList = json.decode(budgetsMockJson) as List<dynamic>;
-    return jsonList.map((json) => BudgetModel.fromJson(json as JSON)).toList();
   }
 
   /// Fetches exchange rates from API

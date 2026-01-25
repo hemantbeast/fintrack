@@ -1,5 +1,4 @@
 import 'package:fintrack/features/dashboard/data/models/balance_model.dart';
-import 'package:fintrack/features/dashboard/data/models/budget_model.dart';
 import 'package:fintrack/features/dashboard/data/models/exchange_rate_model.dart';
 import 'package:fintrack/features/dashboard/data/models/transaction_model.dart';
 import 'package:fintrack/hive/index.dart';
@@ -40,21 +39,6 @@ class DashboardLocal {
     await _storage.saveAllItems<TransactionModel>(
       HiveBoxes.transactions,
       transactions,
-      keyExtractor: (item) => item.id ?? '',
-    );
-  }
-
-  /// Get local budgets data
-  Future<List<BudgetModel>?> getBudgets() async {
-    final budgets = await _storage.getAllItems<BudgetModel>(HiveBoxes.budgets);
-    return budgets.isEmpty ? null : budgets;
-  }
-
-  /// Save budgets data to local storage
-  Future<void> saveBudgets(List<BudgetModel> budgets) async {
-    await _storage.saveAllItems<BudgetModel>(
-      HiveBoxes.budgets,
-      budgets,
       keyExtractor: (item) => item.id ?? '',
     );
   }

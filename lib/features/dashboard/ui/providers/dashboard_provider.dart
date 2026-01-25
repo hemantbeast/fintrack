@@ -1,7 +1,8 @@
 import 'dart:async';
 
+import 'package:fintrack/features/budget/data/repositories/budget_repository_impl.dart';
+import 'package:fintrack/features/budget/domain/entities/budget.dart';
 import 'package:fintrack/features/dashboard/data/repositories/dashboard_repository_impl.dart';
-import 'package:fintrack/features/dashboard/domain/entities/budget.dart';
 import 'package:fintrack/features/dashboard/domain/entities/exchange_rates.dart';
 import 'package:fintrack/features/dashboard/domain/entities/transaction.dart';
 import 'package:fintrack/features/dashboard/ui/states/dashboard_state.dart';
@@ -46,10 +47,9 @@ class DashboardNotifier extends Notifier<DashboardState> {
   }
 
   void _setupStreams() {
-    final repository = ref.read(dashboardRepositoryProvider);
-
-    // Listen to budgets stream
-    _budgetsSubscription = repository.watchBudgets().listen(
+    // Listen to budgets stream from budget repository
+    final budgetRepository = ref.read(budgetRepositoryProvider);
+    _budgetsSubscription = budgetRepository.watchBudgets().listen(
       (budgets) {
         _latestBudgets = budgets;
         _updateState();
@@ -59,8 +59,9 @@ class DashboardNotifier extends Notifier<DashboardState> {
       },
     );
 
-    // Listen to exchange rates stream
-    _exchangeRatesSubscription = repository.watchExchangeRates().listen(
+    // Listen to exchange rates stream from dashboard repository
+    final dashboardRepository = ref.read(dashboardRepositoryProvider);
+    _exchangeRatesSubscription = dashboardRepository.watchExchangeRates().listen(
       (rates) {
         _latestExchangeRates = rates;
         _updateState();

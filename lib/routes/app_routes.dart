@@ -1,7 +1,7 @@
 import 'package:fintrack/core/routes/base_routes.dart';
+import 'package:fintrack/features/budget/domain/entities/budget.dart';
 import 'package:fintrack/features/budget/ui/add_budget_page.dart';
 import 'package:fintrack/features/budget/ui/budget_planning_page.dart';
-import 'package:fintrack/features/dashboard/domain/entities/budget.dart';
 import 'package:fintrack/features/dashboard/ui/all_transactions_page.dart';
 import 'package:fintrack/features/dashboard/ui/dashboard_page.dart';
 import 'package:fintrack/features/expenses/ui/add_expense_page.dart';

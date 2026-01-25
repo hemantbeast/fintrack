@@ -1,4 +1,4 @@
-import 'package:fintrack/features/dashboard/domain/entities/budget.dart';
+import 'package:fintrack/features/budget/domain/entities/budget.dart';
 import 'package:fintrack/features/expenses/domain/entities/category.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

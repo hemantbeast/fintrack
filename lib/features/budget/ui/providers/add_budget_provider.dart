@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:fintrack/features/budget/data/repositories/budget_repository_impl.dart';
+import 'package:fintrack/features/budget/domain/entities/budget.dart';
 import 'package:fintrack/features/budget/ui/states/add_budget_state.dart';
-import 'package:fintrack/features/dashboard/domain/entities/budget.dart';
 import 'package:fintrack/features/expenses/data/repositories/expenses_repository_impl.dart';
 import 'package:fintrack/features/expenses/domain/entities/category.dart';
-import 'package:fintrack/providers/budgets_stream_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
@@ -109,8 +109,8 @@ class AddBudgetNotifier extends Notifier<AddBudgetState> {
         limit: state.limitAmount,
       );
 
-      final budgetsNotifier = ref.read(budgetsStreamProvider.notifier);
-      await budgetsNotifier.saveBudget(budget);
+      final repository = ref.read(budgetRepositoryProvider);
+      await repository.saveBudget(budget);
 
       state = state.copyWith(isLoading: false, isSaved: true);
     } on Exception catch (e) {

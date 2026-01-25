@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:fintrack/features/dashboard/data/sources/local/dashboard_local.dart';
 import 'package:fintrack/features/dashboard/data/sources/remote/dashboard_service.dart';
 import 'package:fintrack/features/dashboard/domain/entities/balance.dart';
-import 'package:fintrack/features/dashboard/domain/entities/budget.dart';
 import 'package:fintrack/features/dashboard/domain/entities/currency_rate.dart';
 import 'package:fintrack/features/dashboard/domain/entities/exchange_rates.dart';
 import 'package:fintrack/features/dashboard/domain/entities/transaction.dart';
@@ -72,31 +71,6 @@ class DashboardRepositoryImpl implements DashboardRepository {
     } on Exception catch (_) {
       // Throw error if fetching fails
       if (cachedTransactions == null) {
-        rethrow;
-      }
-    }
-  }
-
-  /// Get budgets with stale-while-revalidate strategy
-  @override
-  Stream<List<Budget>> watchBudgets() async* {
-    // Get cached data from local storage
-    final cachedBudgets = await local.getBudgets();
-
-    if (cachedBudgets != null) {
-      yield cachedBudgets.map((m) => m.toEntity()).toList();
-    }
-
-    try {
-      // Fetch data from API
-      final budgets = await service.getBudgets();
-      await local.saveBudgets(budgets);
-
-      // Yield fresh data
-      yield budgets.map((m) => m.toEntity()).toList();
-    } on Exception catch (_) {
-      // Throw error if fetching fails
-      if (cachedBudgets == null) {
         rethrow;
       }
     }

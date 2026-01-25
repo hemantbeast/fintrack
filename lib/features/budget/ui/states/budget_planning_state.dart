@@ -1,9 +1,22 @@
-import 'package:fintrack/features/dashboard/domain/entities/budget.dart';
-import 'package:fintrack/providers/budgets_stream_provider.dart';
+import 'package:fintrack/features/budget/domain/entities/budget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'budget_planning_state.freezed.dart';
+
+class BudgetStats {
+  const BudgetStats({
+    required this.totalSpent,
+    required this.totalLimit,
+    required this.percentage,
+  });
+
+  final double totalSpent;
+  final double totalLimit;
+  final double percentage;
+
+  double get remaining => (totalLimit - totalSpent).clamp(0, totalLimit);
+}
 
 @freezed
 abstract class BudgetPlanningState with _$BudgetPlanningState {

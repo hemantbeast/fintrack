@@ -1,5 +1,5 @@
 import 'package:fintrack/core/utils/typedefs.dart';
-import 'package:fintrack/features/dashboard/domain/entities/budget.dart';
+import 'package:fintrack/features/budget/domain/entities/budget.dart';
 import 'package:hive_ce/hive_ce.dart';
 import 'package:json_annotation/json_annotation.dart';
 
