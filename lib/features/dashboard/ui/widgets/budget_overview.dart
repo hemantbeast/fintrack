@@ -25,6 +25,7 @@ class BudgetOverview extends StatelessWidget {
         const SizedBox(height: 12),
         ListView.separated(
           shrinkWrap: true,
+          padding: EdgeInsets.zero,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: budgets.length,
           itemBuilder: (context, index) {

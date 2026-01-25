@@ -10,36 +10,26 @@ enum ExpenseFrequency { daily, weekly, monthly, yearly }
 abstract class AddExpenseState with _$AddExpenseState {
   const factory AddExpenseState({
     required AsyncValue<List<ExpenseCategory>> categories,
-    required ExpenseCategory? selectedCategory,
     required DateTime selectedDate,
-    required double amount,
-    required String description,
-    required bool isRecurring,
-    required ExpenseFrequency? frequency,
-    required bool isLoading,
-    required String? errorMessage,
-    required bool isSaved,
+    @Default(0) double amount,
+    @Default('') String title,
+    @Default('') String description,
+    @Default(false) bool isRecurring,
+    @Default(false) bool isLoading,
+    @Default('') String? errorMessage,
+    @Default(false) bool isSaved,
+    ExpenseCategory? selectedCategory,
+    ExpenseFrequency? frequency,
   }) = _AddExpenseState;
 
   factory AddExpenseState.initial() {
     return AddExpenseState(
       categories: const AsyncLoading(),
-      selectedCategory: null,
       selectedDate: DateTime.now(),
-      amount: 0,
-      description: '',
-      isRecurring: false,
-      frequency: null,
-      isLoading: false,
-      errorMessage: null,
-      isSaved: false,
     );
   }
 }
 
 extension AddExpenseStateX on AddExpenseState {
-  bool get isValid =>
-      selectedCategory != null &&
-      amount > 0 &&
-      description.isNotEmpty;
+  bool get isValid => selectedCategory != null && amount > 0 && title.isNotEmpty;
 }

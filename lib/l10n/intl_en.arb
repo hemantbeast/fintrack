@@ -59,5 +59,7 @@
   "fillAllRequiredFields": "Please fill all required fields",
   "allTransactions": "All Transactions",
   "all": "All",
-  "noTransactionsFound": "No transactions found"
+  "noTransactionsFound": "No transactions found",
+  "title": "Title",
+  "enterTitle": "Enter title"
 }

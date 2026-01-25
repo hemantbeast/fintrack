@@ -17,6 +17,7 @@ class AddExpensePage extends ConsumerStatefulWidget {
 
 class _AddExpensePageState extends ConsumerState<AddExpensePage> {
   final _amountController = TextEditingController();
+  final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _dateController = TextEditingController();
 
@@ -30,6 +31,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
   @override
   void dispose() {
     _amountController.dispose();
+    _titleController.dispose();
     _descriptionController.dispose();
     _dateController.dispose();
     super.dispose();
@@ -45,9 +47,15 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
       if (next.isSaved) {
         AppRouter.pop(true);
       }
+
       // Sync date controller when date changes
       if (previous?.selectedDate != next.selectedDate) {
         _dateController.text = next.selectedDate.toFormattedString('dd MMM yyyy');
+      }
+
+      // Set title when category changes
+      if (_titleController.text.trim().isEmpty && next.selectedCategory != null && previous?.selectedCategory == null) {
+        _titleController.text = next.selectedCategory!.name;
       }
     });
 
@@ -113,6 +121,18 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
 
             const SizedBox(height: 20),
 
+            // Title Input
+            TextFormField(
+              controller: _titleController,
+              onChanged: notifier.onTitleChanged,
+              decoration: InputDecoration(
+                labelText: l10n.title,
+                hintText: l10n.enterTitle,
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
             // Description Input
             TextFormField(
               controller: _descriptionController,
@@ -152,7 +172,9 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
             // Recurring Toggle
             SwitchListTile(
               value: state.isRecurring,
-              onChanged: notifier.onRecurringChanged,
+              onChanged: (value) {
+                notifier.onRecurringChanged(value: value);
+              },
               title: Text(l10n.recurring),
               contentPadding: EdgeInsets.zero,
             ),

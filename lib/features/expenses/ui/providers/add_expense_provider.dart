@@ -4,6 +4,7 @@ import 'package:fintrack/features/dashboard/domain/entities/transaction.dart';
 import 'package:fintrack/features/expenses/data/repositories/expenses_repository_impl.dart';
 import 'package:fintrack/features/expenses/domain/entities/category.dart';
 import 'package:fintrack/features/expenses/ui/states/add_expense_state.dart';
+import 'package:fintrack/providers/transactions_stream_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
@@ -67,6 +68,13 @@ class AddExpenseNotifier extends Notifier<AddExpenseState> {
     );
   }
 
+  void onTitleChanged(String value) {
+    state = state.copyWith(
+      title: value,
+      errorMessage: null,
+    );
+  }
+
   void onDescriptionChanged(String value) {
     state = state.copyWith(
       description: value,
@@ -74,8 +82,7 @@ class AddExpenseNotifier extends Notifier<AddExpenseState> {
     );
   }
 
-  // ignore: avoid_positional_boolean_parameters
-  void onRecurringChanged(bool value) {
+  void onRecurringChanged({required bool value}) {
     state = state.copyWith(
       isRecurring: value,
       frequency: value ? ExpenseFrequency.monthly : null,
@@ -92,20 +99,16 @@ class AddExpenseNotifier extends Notifier<AddExpenseState> {
 
   Future<void> saveExpense() async {
     if (!state.isValid) {
-      state = state.copyWith(
-        errorMessage: 'Please fill all required fields',
-      );
+      state = state.copyWith(errorMessage: 'Please fill all required fields');
       return;
     }
 
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     try {
-      final repository = ref.read(expensesRepositoryProvider);
-
       final transaction = Transaction(
         id: const Uuid().v4(),
-        title: state.selectedCategory!.name,
+        title: state.title,
         category: state.selectedCategory!.name,
         amount: state.amount,
         description: state.description,
@@ -116,17 +119,14 @@ class AddExpenseNotifier extends Notifier<AddExpenseState> {
         frequency: state.frequency?.name,
       );
 
-      await repository.saveTransaction(transaction);
+      // Use shared transactions notifier to add transaction
+      // This will notify all listeners (including dashboard)
+      final transactionsNotifier = ref.read(transactionsStreamProvider.notifier);
+      await transactionsNotifier.addTransaction(transaction);
 
-      state = state.copyWith(
-        isLoading: false,
-        isSaved: true,
-      );
+      state = state.copyWith(isLoading: false, isSaved: true);
     } on Exception catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
     }
   }
 

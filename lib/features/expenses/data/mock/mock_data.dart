@@ -3,38 +3,44 @@ const String categoriesMockJson = '''
   {
     "id": "1",
     "name": "Food",
-    "icon": "fastfood",
+    "icon": "🍔",
     "color": "#FF5733"
   },
   {
     "id": "2",
     "name": "Transport",
-    "icon": "directions_car",
+    "icon": "🚕",
     "color": "#33FF57"
   },
   {
     "id": "3",
     "name": "Rent",
-    "icon": "home",
+    "icon": "🏠",
     "color": "#3357FF"
   },
   {
     "id": "4",
     "name": "Bills",
-    "icon": "receipt",
+    "icon": "🧾",
     "color": "#FF33A1"
   },
   {
     "id": "5",
     "name": "Fun",
-    "icon": "sports_esports",
+    "icon": "🎯",
     "color": "#F3FF33"
   },
   {
     "id": "6",
     "name": "Health",
-    "icon": "local_hospital",
+    "icon": "🏥",
     "color": "#33FFF3"
+  },
+  {
+    "id": "7",
+    "name": "Entertainment",
+    "icon": "🎮",
+    "color": "#EDF7ED"
   }
 ]
 ''';

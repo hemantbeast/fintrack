@@ -1,23 +1,20 @@
 import 'dart:async';
 
 import 'package:fintrack/features/dashboard/data/repositories/dashboard_repository_impl.dart';
-import 'package:fintrack/features/dashboard/domain/entities/balance.dart';
 import 'package:fintrack/features/dashboard/domain/entities/budget.dart';
 import 'package:fintrack/features/dashboard/domain/entities/exchange_rates.dart';
 import 'package:fintrack/features/dashboard/domain/entities/transaction.dart';
 import 'package:fintrack/features/dashboard/ui/states/dashboard_state.dart';
+import 'package:fintrack/providers/transactions_stream_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final dashboardProvider = NotifierProvider<DashboardNotifier, DashboardState>(DashboardNotifier.new);
 
 class DashboardNotifier extends Notifier<DashboardState> {
-  StreamSubscription<Balance>? _balanceSubscription;
-  StreamSubscription<List<Transaction>>? _transactionsSubscription;
   StreamSubscription<List<Budget>>? _budgetsSubscription;
   StreamSubscription<ExchangeRates>? _exchangeRatesSubscription;
 
-  Balance? _latestBalance;
   List<Transaction>? _latestTransactions;
   List<Budget>? _latestBudgets;
   ExchangeRates? _latestExchangeRates;
@@ -26,13 +23,23 @@ class DashboardNotifier extends Notifier<DashboardState> {
   DashboardState build() {
     // Cleanup subscriptions when provider is disposed
     ref.onDispose(() {
-      _balanceSubscription?.cancel();
-      _transactionsSubscription?.cancel();
       _budgetsSubscription?.cancel();
       _exchangeRatesSubscription?.cancel();
     });
 
-    // Start listening to streams
+    // Listen to shared transactions provider for reactive updates
+    ref.listen<AsyncValue<List<Transaction>>>(
+      transactionsStreamProvider,
+      (previous, next) {
+        next.whenData((transactions) {
+          _latestTransactions = transactions;
+          _updateState();
+        });
+      },
+      fireImmediately: true,
+    );
+
+    // Start listening to other streams
     _setupStreams();
 
     return DashboardState.initial();
@@ -40,28 +47,6 @@ class DashboardNotifier extends Notifier<DashboardState> {
 
   void _setupStreams() {
     final repository = ref.read(dashboardRepositoryProvider);
-
-    // Listen to balance stream
-    _balanceSubscription = repository.watchBalance().listen(
-      (balance) {
-        _latestBalance = balance;
-        _updateState();
-      },
-      onError: (Object error) {
-        _updateStateWithError(error);
-      },
-    );
-
-    // Listen to transactions stream
-    _transactionsSubscription = repository.watchTransactions().listen(
-      (transactions) {
-        _latestTransactions = transactions;
-        _updateState();
-      },
-      onError: (error) {
-        // Ignore transaction errors if we have other data
-      },
-    );
 
     // Listen to budgets stream
     _budgetsSubscription = repository.watchBudgets().listen(
@@ -89,16 +74,20 @@ class DashboardNotifier extends Notifier<DashboardState> {
   }
 
   void _updateState() {
-    // Only update if we have at least some data
-    if (_latestBalance == null && _latestTransactions == null && _latestBudgets == null) {
+    // Only update if we have transactions data
+    if (_latestTransactions == null) {
       state = state.copyWith(screenData: const AsyncLoading());
       return;
     }
 
+    // Compute balance from transactions
+    final transactionsNotifier = ref.read(transactionsStreamProvider.notifier);
+    final computedBalance = transactionsNotifier.computeBalance();
+
     state = state.copyWith(
       screenData: AsyncData(
         DashboardScreenData(
-          balance: _latestBalance ?? Balance(currentBalance: 0, income: 0, expenses: 0),
+          balance: computedBalance,
           recentTransactions: _latestTransactions ?? [],
           budgets: _latestBudgets ?? [],
           exchangeRates: _latestExchangeRates,
@@ -109,7 +98,7 @@ class DashboardNotifier extends Notifier<DashboardState> {
 
   void _updateStateWithError(Object error, [StackTrace? stackTrace]) {
     // If we have no data at all, show error
-    if (_latestBalance == null && _latestTransactions == null && _latestBudgets == null) {
+    if (_latestTransactions == null && _latestBudgets == null) {
       state = state.copyWith(
         screenData: AsyncError(error, stackTrace ?? StackTrace.current),
       );
@@ -119,19 +108,19 @@ class DashboardNotifier extends Notifier<DashboardState> {
 
   Future<void> refresh() async {
     // Cancel existing subscriptions
-    await _balanceSubscription?.cancel();
-    await _transactionsSubscription?.cancel();
     await _budgetsSubscription?.cancel();
     await _exchangeRatesSubscription?.cancel();
 
     // Clear current data
-    _latestBalance = null;
     _latestTransactions = null;
     _latestBudgets = null;
     _latestExchangeRates = null;
 
     // Show loading state
     state = state.copyWith(screenData: const AsyncLoading());
+
+    // Refresh shared transactions
+    await ref.read(transactionsStreamProvider.notifier).refresh();
 
     // Re-setup streams to fetch fresh data
     _setupStreams();

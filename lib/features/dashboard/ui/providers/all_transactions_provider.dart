@@ -1,8 +1,6 @@
-import 'dart:async';
-
-import 'package:fintrack/features/dashboard/data/repositories/dashboard_repository_impl.dart';
 import 'package:fintrack/features/dashboard/domain/entities/transaction.dart';
 import 'package:fintrack/features/dashboard/ui/states/all_transactions_state.dart';
+import 'package:fintrack/providers/transactions_stream_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final allTransactionsProvider = NotifierProvider.autoDispose<AllTransactionsNotifier, AllTransactionsState>(
@@ -10,33 +8,33 @@ final allTransactionsProvider = NotifierProvider.autoDispose<AllTransactionsNoti
 );
 
 class AllTransactionsNotifier extends Notifier<AllTransactionsState> {
-  StreamSubscription<List<Transaction>>? _transactionsSubscription;
   List<Transaction>? _allTransactions;
 
   @override
   AllTransactionsState build() {
-    ref.onDispose(() {
-      _transactionsSubscription?.cancel();
+    // Listen to shared transactions provider for reactive updates
+    Future.delayed(Duration.zero, () {
+      ref.listen<AsyncValue<List<Transaction>>>(
+        transactionsStreamProvider,
+        (previous, next) {
+          next.when(
+            data: (transactions) {
+              _allTransactions = transactions;
+              _updateState();
+            },
+            loading: () {
+              state = state.copyWith(transactions: const AsyncLoading());
+            },
+            error: (error, stack) {
+              state = state.copyWith(transactions: AsyncError(error, stack));
+            },
+          );
+        },
+        fireImmediately: true,
+      );
     });
 
-    Future.delayed(Duration.zero, _setupStreams);
     return AllTransactionsState.initial();
-  }
-
-  void _setupStreams() {
-    final repository = ref.read(dashboardRepositoryProvider);
-
-    _transactionsSubscription = repository.watchTransactions().listen(
-      (transactions) {
-        _allTransactions = transactions;
-        _updateState();
-      },
-      onError: (Object error, StackTrace stack) {
-        state = state.copyWith(
-          transactions: AsyncError(error, stack),
-        );
-      },
-    );
   }
 
   void _updateState() {
@@ -68,11 +66,9 @@ class AllTransactionsNotifier extends Notifier<AllTransactionsState> {
   }
 
   Future<void> refresh() async {
-    await _transactionsSubscription?.cancel();
-
     _allTransactions = null;
     state = state.copyWith(transactions: const AsyncLoading());
 
-    _setupStreams();
+    await ref.read(transactionsStreamProvider.notifier).refresh();
   }
 }
