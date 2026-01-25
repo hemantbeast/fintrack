@@ -1,6 +1,8 @@
 import 'package:fintrack/core/extensions/context_extensions.dart';
 import 'package:fintrack/features/dashboard/domain/entities/transaction.dart';
 import 'package:fintrack/generated/l10n.dart';
+import 'package:fintrack/routes/app_router.dart';
+import 'package:fintrack/routes/route_enum.dart';
 import 'package:fintrack/themes/colors.dart';
 import 'package:fintrack/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +29,9 @@ class RecentTransactions extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                AppRouter.pushNamed(RouteEnum.allTransactionsScreen.name);
+              },
               child: Text(
                 S.of(context).viewAll,
                 style: defaultTextStyle(

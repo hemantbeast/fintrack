@@ -2,7 +2,8 @@ enum RouteEnum {
   splashScreen('/splash'),
   onboardingScreen('/onboarding'),
   dashboardScreen('/dashboard'),
-  addExpenseScreen('/add-expense')
+  addExpenseScreen('/add-expense'),
+  allTransactionsScreen('/all-transactions'),
   ;
 
   const RouteEnum(this.path);

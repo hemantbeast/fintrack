@@ -56,5 +56,8 @@
   "selectDate": "Select Date",
   "enterAmount": "Enter amount",
   "enterDescription": "Enter description",
-  "fillAllRequiredFields": "Please fill all required fields"
+  "fillAllRequiredFields": "Please fill all required fields",
+  "allTransactions": "All Transactions",
+  "all": "All",
+  "noTransactionsFound": "No transactions found"
 }

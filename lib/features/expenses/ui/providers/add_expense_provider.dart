@@ -7,7 +7,7 @@ import 'package:fintrack/features/expenses/ui/states/add_expense_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
-final addExpenseProvider = NotifierProvider<AddExpenseNotifier, AddExpenseState>(
+final addExpenseProvider = NotifierProvider.autoDispose<AddExpenseNotifier, AddExpenseState>(
   AddExpenseNotifier.new,
 );
 
