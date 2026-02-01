@@ -1,5 +1,6 @@
 import 'package:fintrack/core/extensions/context_extensions.dart';
 import 'package:fintrack/features/dashboard/domain/entities/exchange_rates.dart';
+import 'package:fintrack/features/settings/domain/entities/currency.dart';
 import 'package:fintrack/generated/l10n.dart';
 import 'package:fintrack/routes/app_router.dart';
 import 'package:fintrack/themes/colors.dart';
@@ -23,9 +24,6 @@ class _CurrencyConverterCardState extends State<CurrencyConverterCard> {
   final _amountController = TextEditingController(text: '100');
   String _toCurrency = 'USD';
 
-  // Common currencies to show at the top of the dropdown
-  static const _popularCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'CNY', 'AED'];
-
   @override
   void dispose() {
     _amountController.dispose();
@@ -38,21 +36,15 @@ class _CurrencyConverterCardState extends State<CurrencyConverterCard> {
 
   String get _baseCurrency => widget.exchangeRates?.baseCurrency ?? 'INR';
 
-  List<String> get _availableCurrencies {
-    final currencies = widget.exchangeRates?.availableCurrencies ?? [];
-    if (currencies.isEmpty) return _popularCurrencies;
+  List<Currency> get _availableCurrencies {
+    final availableCodes = widget.exchangeRates?.availableCurrencies ?? [];
+    if (availableCodes.isEmpty) {
+      // Return major currencies if no exchange rates available
+      return Currency.majorCodes.map(Currency.fromCode).toList();
+    }
 
-    // Sort with popular currencies first
-    final sorted = List<String>.from(currencies);
-    sorted.sort((a, b) {
-      final aPopular = _popularCurrencies.contains(a);
-      final bPopular = _popularCurrencies.contains(b);
-
-      if (aPopular && !bPopular) return -1;
-      if (!aPopular && bPopular) return 1;
-      return a.compareTo(b);
-    });
-    return sorted;
+    // Filter currencies that are available in exchange rates
+    return availableCodes.map(Currency.maybeFromCode).whereType<Currency>().toList()..sort((a, b) => a.code.compareTo(b.code));
   }
 
   @override
@@ -178,7 +170,7 @@ class _CurrencyOutputWidget extends StatelessWidget {
 
   final String currency;
   final String value;
-  final List<String> availableCurrencies;
+  final List<Currency> availableCurrencies;
   final ValueChanged<String> onCurrencyChanged;
 
   @override
@@ -230,9 +222,7 @@ class _CurrencyOutputWidget extends StatelessWidget {
   void _showCurrencyPicker(BuildContext context) {
     showModalBottomSheet<void>(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
+      isScrollControlled: true,
       builder: (context) => _CurrencyPickerSheet(
         currencies: availableCurrencies,
         selectedCurrency: currency,
@@ -252,60 +242,69 @@ class _CurrencyPickerSheet extends StatelessWidget {
     required this.onSelected,
   });
 
-  final List<String> currencies;
+  final List<Currency> currencies;
   final String selectedCurrency;
   final ValueChanged<String> onSelected;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 400,
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                Text(
+    return SafeArea(
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        minChildSize: 0.4,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (context, scrollController) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(
                   S.of(context).selectCurrency,
                   style: semiboldTextStyle(
-                    color: gray33,
+                    color: context.theme.textTheme.bodyLarge?.color,
                     fontSize: 18,
                   ),
                 ),
-                const Spacer(),
-                const IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: AppRouter.pop,
-                ),
-              ],
-            ),
-          ),
-          const Divider(),
-          Expanded(
-            child: ListView.builder(
-              itemCount: currencies.length,
-              itemBuilder: (context, index) {
-                final currency = currencies[index];
-                final isSelected = currency == selectedCurrency;
+              ),
+              Expanded(
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemCount: currencies.length,
+                  itemBuilder: (context, index) {
+                    final currency = currencies[index];
+                    final isSelected = currency.code == selectedCurrency;
 
-                return ListTile(
-                  title: Text(
-                    currency,
-                    style: defaultTextStyle(
-                      fontSize: 16,
-                      color: isSelected ? primaryColor : gray33,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                    ),
-                  ),
-                  trailing: isSelected ? const Icon(Icons.check, color: primaryColor) : null,
-                  onTap: () => onSelected(currency),
-                );
-              },
-            ),
-          ),
-        ],
+                    return ListTile(
+                      leading: Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: isSelected ? primaryColor.withValues(alpha: 0.1) : grayF5,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Text(
+                            currency.symbol,
+                            style: semiboldTextStyle(
+                              color: isSelected ? primaryColor : gray98,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ),
+                      title: Text(currency.code),
+                      subtitle: Text(currency.name),
+                      trailing: isSelected ? const Icon(Icons.check, color: primaryColor) : null,
+                      onTap: () => onSelected(currency.code),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
