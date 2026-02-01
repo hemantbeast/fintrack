@@ -1,14 +1,16 @@
 import 'package:fintrack/core/extensions/context_extensions.dart';
 import 'package:fintrack/features/dashboard/domain/entities/exchange_rates.dart';
 import 'package:fintrack/features/settings/domain/entities/currency.dart';
+import 'package:fintrack/features/settings/ui/providers/settings_provider.dart';
 import 'package:fintrack/generated/l10n.dart';
 import 'package:fintrack/routes/app_router.dart';
 import 'package:fintrack/themes/colors.dart';
 import 'package:fintrack/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CurrencyConverterCard extends StatefulWidget {
+class CurrencyConverterCard extends ConsumerStatefulWidget {
   const CurrencyConverterCard({
     required this.exchangeRates,
     super.key,
@@ -17,10 +19,10 @@ class CurrencyConverterCard extends StatefulWidget {
   final ExchangeRates? exchangeRates;
 
   @override
-  State<CurrencyConverterCard> createState() => _CurrencyConverterCardState();
+  ConsumerState<CurrencyConverterCard> createState() => _CurrencyConverterCardState();
 }
 
-class _CurrencyConverterCardState extends State<CurrencyConverterCard> {
+class _CurrencyConverterCardState extends ConsumerState<CurrencyConverterCard> {
   final _amountController = TextEditingController(text: '100');
   String _toCurrency = 'USD';
 
@@ -34,7 +36,14 @@ class _CurrencyConverterCardState extends State<CurrencyConverterCard> {
 
   double get _rate => widget.exchangeRates?.getRate(_toCurrency) ?? 1.0;
 
-  String get _baseCurrency => widget.exchangeRates?.baseCurrency ?? 'INR';
+  String get _baseCurrency {
+    final settingsState = ref.watch(settingsProvider);
+    return settingsState.screenData.when(
+      data: (data) => data.preferences.currency,
+      loading: () => 'INR',
+      error: (_, __) => 'INR',
+    );
+  }
 
   List<Currency> get _availableCurrencies {
     final availableCodes = widget.exchangeRates?.availableCurrencies ?? [];

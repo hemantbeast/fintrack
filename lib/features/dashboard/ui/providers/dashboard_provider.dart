@@ -6,6 +6,8 @@ import 'package:fintrack/features/dashboard/data/repositories/dashboard_reposito
 import 'package:fintrack/features/dashboard/domain/entities/exchange_rates.dart';
 import 'package:fintrack/features/dashboard/domain/entities/transaction.dart';
 import 'package:fintrack/features/dashboard/ui/states/dashboard_state.dart';
+import 'package:fintrack/features/settings/ui/providers/settings_provider.dart';
+import 'package:fintrack/features/settings/ui/states/settings_state.dart';
 import 'package:fintrack/providers/transactions_stream_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,6 +21,8 @@ class DashboardNotifier extends Notifier<DashboardState> {
   List<Transaction>? _latestTransactions;
   List<Budget>? _latestBudgets;
   ExchangeRates? _latestExchangeRates;
+
+  String _currentBaseCurrency = 'INR';
 
   @override
   DashboardState build() {
@@ -40,6 +44,20 @@ class DashboardNotifier extends Notifier<DashboardState> {
       fireImmediately: true,
     );
 
+    // Listen to settings provider for currency changes
+    ref.listen<SettingsState>(
+      settingsProvider,
+      (previous, next) {
+        next.screenData.whenData((data) {
+          final newCurrency = data.preferences.currency;
+          if (newCurrency != _currentBaseCurrency) {
+            _currentBaseCurrency = newCurrency;
+            _refreshExchangeRates(newCurrency);
+          }
+        });
+      },
+    );
+
     // Start listening to other streams
     _setupStreams();
 
@@ -59,19 +77,40 @@ class DashboardNotifier extends Notifier<DashboardState> {
       },
     );
 
-    // Listen to exchange rates stream from dashboard repository
-    final dashboardRepository = ref.read(dashboardRepositoryProvider);
-    _exchangeRatesSubscription = dashboardRepository.watchExchangeRates().listen(
-      (rates) {
-        _latestExchangeRates = rates;
-        _updateState();
-      },
-      onError: (Object error, StackTrace stackTrace) {
-        // Log exchange rate errors for debugging
-        debugPrint('Exchange rate error: $error');
-        debugPrint('Stack trace: $stackTrace');
-      },
+    // Get user's preferred currency from settings
+    final settingsState = ref.read(settingsProvider);
+    _currentBaseCurrency = settingsState.screenData.when(
+      data: (data) => data.preferences.currency,
+      loading: () => 'INR',
+      error: (_, _) => 'INR',
     );
+
+    // Listen to exchange rates stream from dashboard repository
+    _setupExchangeRatesStream(_currentBaseCurrency);
+  }
+
+  void _setupExchangeRatesStream(String baseCurrency) {
+    final dashboardRepository = ref.read(dashboardRepositoryProvider);
+    _exchangeRatesSubscription = dashboardRepository
+        .watchExchangeRates(baseCurrency: baseCurrency)
+        .listen(
+          (rates) {
+            _latestExchangeRates = rates;
+            _updateState();
+          },
+          onError: (Object error, StackTrace stackTrace) {
+            // Log exchange rate errors for debugging
+            debugPrint('Exchange rate error: $error');
+            debugPrint('Stack trace: $stackTrace');
+          },
+        );
+  }
+
+  void _refreshExchangeRates(String newCurrency) {
+    // Cancel existing subscription
+    _exchangeRatesSubscription?.cancel();
+    // Set up new stream with new base currency
+    _setupExchangeRatesStream(newCurrency);
   }
 
   void _updateState() {

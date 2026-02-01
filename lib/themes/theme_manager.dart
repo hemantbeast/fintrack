@@ -13,6 +13,10 @@ class ThemeNotifier extends Notifier<ThemeState> {
   ThemeState build() {
     return ThemeState.initial();
   }
+
+  void updateMode(ThemeMode mode) {
+    state = state.copyWith(mode: mode);
+  }
 }
 
 @freezed

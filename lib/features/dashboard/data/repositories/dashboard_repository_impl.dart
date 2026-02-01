@@ -82,7 +82,7 @@ class DashboardRepositoryImpl implements DashboardRepository {
   /// Get exchange rates with stale-while-revalidate strategy
   /// Cache is valid for 24 hours
   @override
-  Stream<ExchangeRates> watchExchangeRates({String baseCurrency = 'INR'}) async* {
+  Stream<ExchangeRates> watchExchangeRates({required String baseCurrency}) async* {
     // Get cached data from local storage
     final cachedRates = await local.getExchangeRates();
 

@@ -12,7 +12,7 @@ abstract class DashboardRepository {
 
   /// Returns a stream of exchange rates (cache-first with 24h refresh)
   /// [baseCurrency] - The base currency code (e.g., 'INR')
-  Stream<ExchangeRates> watchExchangeRates({String baseCurrency = 'INR'});
+  Stream<ExchangeRates> watchExchangeRates({required String baseCurrency});
 
   /// Get currency rate from cached exchange rates
   CurrencyRate getCurrencyRate({required String from, required String to});

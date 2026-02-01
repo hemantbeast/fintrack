@@ -8,6 +8,9 @@ abstract class SettingsRepository {
   /// Returns a stream of user preferences (cache-first with background refresh)
   Stream<UserPreferences> watchPreferences();
 
+  /// Get current user preferences from cache (null if not available)
+  Future<UserPreferences?> getPreferences();
+
   /// Update user profile
   Future<void> updateProfile(UserProfile profile);
 

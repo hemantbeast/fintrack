@@ -7,7 +7,8 @@ import 'package:fintrack/features/settings/domain/entities/currency.dart';
 import 'package:fintrack/features/settings/domain/entities/user_preferences.dart';
 import 'package:fintrack/features/settings/domain/entities/user_profile.dart';
 import 'package:fintrack/features/settings/ui/states/settings_state.dart';
-import 'package:flutter/foundation.dart';
+import 'package:fintrack/themes/theme_manager.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -66,24 +67,66 @@ class SettingsNotifier extends Notifier<SettingsState> {
       (preferences) {
         _latestPreferences = preferences;
         _updateState();
+
+        // Refresh exchange rates when currency changes
+        _refreshExchangeRatesIfNeeded(preferences.currency);
       },
       onError: (Object error, StackTrace stack) {
         state = state.copyWith(screenData: AsyncError(error, stack));
       },
     );
 
+    // Get initial currency preference and set up exchange rates stream
+    _setupExchangeRatesStream();
+  }
+
+  String _currentExchangeRateCurrency = 'INR';
+
+  Future<void> _setupExchangeRatesStream() async {
+    // Get current preferences to determine the base currency
+    final repository = ref.read(settingsRepositoryProvider);
+    final preferences = await repository.getPreferences();
+    final baseCurrency = preferences?.currency ?? 'INR';
+    _currentExchangeRateCurrency = baseCurrency;
+
     // Listen to exchange rates stream for available currencies
     final dashboardRepository = ref.read(dashboardRepositoryProvider);
-    _exchangeRatesSubscription = dashboardRepository.watchExchangeRates().listen(
-      (rates) {
-        _latestExchangeRates = rates;
-        _updateState();
-      },
-      onError: (Object error, StackTrace stack) {
-        // Log error but don't fail - we can use default currencies
-        debugPrint('Exchange rate error in settings: $error');
-      },
-    );
+    _exchangeRatesSubscription = dashboardRepository
+        .watchExchangeRates(baseCurrency: baseCurrency)
+        .listen(
+          (rates) {
+            _latestExchangeRates = rates;
+            _updateState();
+          },
+          onError: (Object error, StackTrace stack) {
+            // Log error but don't fail - we can use default currencies
+            debugPrint('Exchange rate error in settings: $error');
+          },
+        );
+  }
+
+  void _refreshExchangeRatesIfNeeded(String newCurrency) {
+    // If the currency has changed, we need to refresh exchange rates
+    if (newCurrency != _currentExchangeRateCurrency) {
+      _currentExchangeRateCurrency = newCurrency;
+
+      // Cancel existing subscription
+      _exchangeRatesSubscription?.cancel();
+
+      // Set up new stream with new base currency
+      final dashboardRepository = ref.read(dashboardRepositoryProvider);
+      _exchangeRatesSubscription = dashboardRepository
+          .watchExchangeRates(baseCurrency: newCurrency)
+          .listen(
+            (rates) {
+              _latestExchangeRates = rates;
+              _updateState();
+            },
+            onError: (Object error, StackTrace stack) {
+              debugPrint('Exchange rate error in settings: $error');
+            },
+          );
+    }
   }
 
   void _updateState() {
@@ -118,11 +161,31 @@ class SettingsNotifier extends Notifier<SettingsState> {
   Future<void> updateProfile(UserProfile profile) async {
     final repository = ref.read(settingsRepositoryProvider);
     await repository.updateProfile(profile);
+
+    // Update local state immediately so UI reflects changes
+    _latestProfile = profile;
+    _updateState();
   }
 
   Future<void> updatePreferences(UserPreferences preferences) async {
     final repository = ref.read(settingsRepositoryProvider);
+
+    final mode = switch (preferences.theme) {
+      ThemeOption.light => ThemeMode.light,
+      ThemeOption.dark => ThemeMode.dark,
+      ThemeOption.system => ThemeMode.system,
+    };
+
+    ref.read(themeProvider.notifier).updateMode(mode);
     await repository.updatePreferences(preferences);
+
+    // Update local state immediately so UI reflects changes
+    _latestPreferences = preferences;
+
+    // Refresh exchange rates if currency changed
+    _refreshExchangeRatesIfNeeded(preferences.currency);
+
+    _updateState();
   }
 
   Future<void> clearAllData() async {

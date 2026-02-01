@@ -75,6 +75,13 @@ class SettingsRepositoryImpl implements SettingsRepository {
     }
   }
 
+  /// Get current user preferences from cache (null if not available)
+  @override
+  Future<UserPreferences?> getPreferences() async {
+    final cached = await local.getPreferences();
+    return cached?.toEntity();
+  }
+
   /// Update user profile
   @override
   Future<void> updateProfile(UserProfile profile) async {
