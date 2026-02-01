@@ -1,11 +1,13 @@
 import 'package:fintrack/core/extensions/context_extensions.dart';
 import 'package:fintrack/features/dashboard/domain/entities/transaction.dart';
+import 'package:fintrack/features/settings/ui/providers/currency_formatter_provider.dart';
 import 'package:fintrack/generated/l10n.dart';
 import 'package:fintrack/routes/app_router.dart';
 import 'package:fintrack/routes/route_enum.dart';
 import 'package:fintrack/themes/colors.dart';
 import 'package:fintrack/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 class RecentTransactions extends StatelessWidget {
@@ -60,7 +62,7 @@ class RecentTransactions extends StatelessWidget {
   }
 }
 
-class _TransactionItem extends StatelessWidget {
+class _TransactionItem extends ConsumerWidget {
   const _TransactionItem({required this.transaction});
 
   final Transaction transaction;
@@ -79,10 +81,11 @@ class _TransactionItem extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isIncome = transaction.type == TransactionType.income;
     final amountColor = isIncome ? secondaryColor : accentColor;
     final amountPrefix = isIncome ? '+' : '-';
+    final currencyFormatter = ref.watch(currencyFormatterProvider);
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -131,7 +134,7 @@ class _TransactionItem extends StatelessWidget {
             ),
           ),
           Text(
-            '$amountPrefix\$${transaction.amount.toStringAsFixed(2)}',
+            '$amountPrefix${currencyFormatter.format(transaction.amount)}',
             style: semiboldTextStyle(
               color: amountColor,
               fontSize: 16,

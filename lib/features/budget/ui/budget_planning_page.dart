@@ -2,6 +2,7 @@ import 'package:fintrack/core/extensions/context_extensions.dart';
 import 'package:fintrack/features/budget/domain/entities/budget.dart';
 import 'package:fintrack/features/budget/ui/providers/budget_planning_provider.dart';
 import 'package:fintrack/features/budget/ui/states/budget_planning_state.dart';
+import 'package:fintrack/features/settings/ui/providers/currency_formatter_provider.dart';
 import 'package:fintrack/generated/l10n.dart';
 import 'package:fintrack/routes/app_router.dart';
 import 'package:fintrack/routes/route_enum.dart';
@@ -131,7 +132,7 @@ class BudgetPlanningPage extends ConsumerWidget {
                 leading: const Icon(Icons.edit),
                 title: Text(l10n.editBudget),
                 onTap: () {
-                  Navigator.pop(context);
+                  AppRouter.pop();
                   AppRouter.pushNamed(
                     RouteEnum.addBudgetScreen.name,
                     args: budget,
@@ -145,7 +146,7 @@ class BudgetPlanningPage extends ConsumerWidget {
                   style: const TextStyle(color: accentColor),
                 ),
                 onTap: () {
-                  Navigator.pop(context);
+                  AppRouter.pop();
                   _confirmDelete(context, budget, notifier);
                 },
               ),
@@ -171,12 +172,12 @@ class BudgetPlanningPage extends ConsumerWidget {
           content: Text(l10n.confirmDeleteBudget),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: AppRouter.pop,
               child: Text(l10n.cancel),
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                AppRouter.pop();
                 notifier.deleteBudget(budget.id);
               },
               child: Text(
@@ -191,16 +192,17 @@ class BudgetPlanningPage extends ConsumerWidget {
   }
 }
 
-class _TotalBudgetCard extends StatelessWidget {
+class _TotalBudgetCard extends ConsumerWidget {
   const _TotalBudgetCard({required this.stats});
 
   final BudgetStats stats;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = S.of(context);
     final percentage = stats.percentage.clamp(0.0, 100.0);
     final progressColor = _getProgressColor(percentage);
+    final currencyFormatter = ref.watch(currencyFormatterProvider);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -235,7 +237,7 @@ class _TotalBudgetCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '\$${stats.totalSpent.toStringAsFixed(0)} / \$${stats.totalLimit.toStringAsFixed(0)}',
+                '${currencyFormatter.formatCompact(stats.totalSpent)} / ${currencyFormatter.formatCompact(stats.totalLimit)}',
                 style: semiboldTextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -272,7 +274,7 @@ class _TotalBudgetCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            '\$${stats.remaining.toStringAsFixed(2)} ${l10n.remaining}',
+            '${currencyFormatter.format(stats.remaining)} ${l10n.remaining}',
             style: defaultTextStyle(
               color: Colors.white.withValues(alpha: 0.8),
               fontSize: 12,
@@ -291,7 +293,7 @@ class _TotalBudgetCard extends StatelessWidget {
   }
 }
 
-class _BudgetCard extends StatelessWidget {
+class _BudgetCard extends ConsumerWidget {
   const _BudgetCard({
     required this.budget,
     required this.onTap,
@@ -301,11 +303,12 @@ class _BudgetCard extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = S.of(context);
     final percentage = budget.percentage;
     final progressColor = _getProgressColor(percentage);
     final isWarning = percentage >= 75;
+    final currencyFormatter = ref.watch(currencyFormatterProvider);
 
     return GestureDetector(
       onTap: onTap,
@@ -348,7 +351,7 @@ class _BudgetCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '\$${budget.spent.toStringAsFixed(0)} / \$${budget.limit.toStringAsFixed(0)}',
+                        '${currencyFormatter.formatCompact(budget.spent)} / ${currencyFormatter.formatCompact(budget.limit)}',
                         style: defaultTextStyle(
                           color: gray98,
                           fontSize: 12,
@@ -379,7 +382,7 @@ class _BudgetCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            '\$${budget.remaining.toStringAsFixed(0)} ${l10n.remaining}',
+                            '${currencyFormatter.formatCompact(budget.remaining)} ${l10n.remaining}',
                             style: defaultTextStyle(
                               color: progressColor,
                               fontSize: 11,
@@ -390,7 +393,7 @@ class _BudgetCard extends StatelessWidget {
                       )
                     else
                       Text(
-                        '\$${budget.remaining.toStringAsFixed(0)} ${l10n.remaining}',
+                        '${currencyFormatter.formatCompact(budget.remaining)} ${l10n.remaining}',
                         style: defaultTextStyle(
                           color: secondaryColor,
                           fontSize: 11,

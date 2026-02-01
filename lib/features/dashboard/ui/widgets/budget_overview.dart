@@ -1,9 +1,11 @@
 import 'package:fintrack/core/extensions/context_extensions.dart';
 import 'package:fintrack/features/budget/domain/entities/budget.dart';
+import 'package:fintrack/features/settings/ui/providers/currency_formatter_provider.dart';
 import 'package:fintrack/generated/l10n.dart';
 import 'package:fintrack/themes/colors.dart';
 import 'package:fintrack/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class BudgetOverview extends StatelessWidget {
   const BudgetOverview({required this.budgets, super.key});
@@ -40,7 +42,7 @@ class BudgetOverview extends StatelessWidget {
   }
 }
 
-class _BudgetItem extends StatelessWidget {
+class _BudgetItem extends ConsumerWidget {
   const _BudgetItem({required this.budget});
 
   final Budget budget;
@@ -52,7 +54,9 @@ class _BudgetItem extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currencyFormatter = ref.watch(currencyFormatterProvider);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -91,7 +95,7 @@ class _BudgetItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '\$${budget.spent.toStringAsFixed(0)} / \$${budget.limit.toStringAsFixed(0)}',
+                      '${currencyFormatter.formatCompact(budget.spent, decimalPlaces: 0)} / ${currencyFormatter.formatCompact(budget.limit, decimalPlaces: 0)}',
                       style: defaultTextStyle(
                         color: gray98,
                         fontSize: 12,

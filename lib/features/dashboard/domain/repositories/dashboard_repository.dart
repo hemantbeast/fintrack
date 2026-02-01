@@ -11,8 +11,8 @@ abstract class DashboardRepository {
   Stream<List<Transaction>> watchTransactions();
 
   /// Returns a stream of exchange rates (cache-first with 24h refresh)
-  /// [baseCurrency] - The base currency code (e.g., 'USD')
-  Stream<ExchangeRates> watchExchangeRates({String baseCurrency = 'USD'});
+  /// [baseCurrency] - The base currency code (e.g., 'INR')
+  Stream<ExchangeRates> watchExchangeRates({String baseCurrency = 'INR'});
 
   /// Get currency rate from cached exchange rates
   CurrencyRate getCurrencyRate({required String from, required String to});

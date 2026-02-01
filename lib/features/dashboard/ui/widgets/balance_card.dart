@@ -3,14 +3,19 @@ import 'package:fintrack/generated/l10n.dart';
 import 'package:fintrack/themes/colors.dart';
 import 'package:fintrack/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BalanceCard extends StatelessWidget {
+import 'package:fintrack/features/settings/ui/providers/currency_formatter_provider.dart';
+
+class BalanceCard extends ConsumerWidget {
   const BalanceCard({required this.balance, super.key});
 
   final Balance balance;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currencyFormatter = ref.watch(currencyFormatterProvider);
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -41,7 +46,7 @@ class BalanceCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            '\$${balance.currentBalance.toStringAsFixed(2)}',
+            currencyFormatter.format(balance.currentBalance),
             style: boldTextStyle(
               color: Colors.white,
               fontSize: 32,
@@ -58,6 +63,7 @@ class BalanceCard extends StatelessWidget {
                   '↑ ${S.of(context).income}',
                   balance.income,
                   secondaryColor,
+                  currencyFormatter,
                 ),
               ),
               const SizedBox(width: 16),
@@ -67,6 +73,7 @@ class BalanceCard extends StatelessWidget {
                   '↓ ${S.of(context).expenses}',
                   balance.expenses,
                   accentColor,
+                  currencyFormatter,
                 ),
               ),
             ],
@@ -76,7 +83,13 @@ class BalanceCard extends StatelessWidget {
     );
   }
 
-  Widget _buildBalanceItem(BuildContext context, String label, double amount, Color color) {
+  Widget _buildBalanceItem(
+    BuildContext context,
+    String label,
+    double amount,
+    Color color,
+    CurrencyFormatterHelper formatter,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -90,7 +103,7 @@ class BalanceCard extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          '\$${amount.toStringAsFixed(2)}',
+          formatter.format(amount),
           style: semiboldTextStyle(
             color: color,
             fontSize: 18,

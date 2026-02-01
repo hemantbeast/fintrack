@@ -35,8 +35,8 @@ class DashboardService with ApiNetwork {
   }
 
   /// Fetches exchange rates from API
-  /// [baseCurrency] - The base currency code (e.g., 'USD')
-  Future<ExchangeRateModel> getExchangeRates({String baseCurrency = 'USD'}) async {
+  /// [baseCurrency] - The base currency code (e.g., 'INR')
+  Future<ExchangeRateModel> getExchangeRates({String baseCurrency = 'INR'}) async {
     final completer = Completer<ExchangeRateModel>();
 
     await apiRequest(

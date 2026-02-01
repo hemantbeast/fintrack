@@ -54,7 +54,7 @@ class ExchangeRateModel extends HiveObject {
     }
 
     return ExchangeRates(
-      baseCurrency: baseCode ?? 'USD',
+      baseCurrency: baseCode ?? 'INR',
       rates: ratesMap,
       lastUpdated: timeLastUpdateUnix != null
           ? DateTime.fromMillisecondsSinceEpoch(timeLastUpdateUnix! * 1000)

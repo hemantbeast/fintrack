@@ -2,6 +2,7 @@ import 'package:fintrack/core/extensions/context_extensions.dart';
 import 'package:fintrack/core/extensions/widget_extensions.dart';
 import 'package:fintrack/features/budget/domain/entities/budget.dart';
 import 'package:fintrack/features/budget/ui/providers/add_budget_provider.dart';
+import 'package:fintrack/features/settings/ui/providers/currency_formatter_provider.dart';
 import 'package:fintrack/generated/l10n.dart';
 import 'package:fintrack/routes/app_router.dart';
 import 'package:fintrack/themes/custom_theme.dart';
@@ -119,7 +120,7 @@ class _AddBudgetPageState extends ConsumerState<AddBudgetPage> {
               onChanged: notifier.onLimitChanged,
               decoration: InputDecoration(
                 hintText: l10n.enterAmount,
-                prefixText: r'$ ',
+                prefixText: '${ref.watch(currencyFormatterProvider).symbol} ',
               ),
             ),
 
@@ -129,7 +130,7 @@ class _AddBudgetPageState extends ConsumerState<AddBudgetPage> {
             if (isEditing) ...[
               _InfoRow(
                 label: l10n.currentSpending,
-                value: '\$${state.editingBudget!.spent.toStringAsFixed(2)}',
+                value: ref.watch(currencyFormatterProvider).format(state.editingBudget!.spent),
               ),
               const SizedBox(height: 24),
             ],

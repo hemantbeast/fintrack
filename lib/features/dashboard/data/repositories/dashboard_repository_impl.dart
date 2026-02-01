@@ -82,7 +82,7 @@ class DashboardRepositoryImpl implements DashboardRepository {
   /// Get exchange rates with stale-while-revalidate strategy
   /// Cache is valid for 24 hours
   @override
-  Stream<ExchangeRates> watchExchangeRates({String baseCurrency = 'USD'}) async* {
+  Stream<ExchangeRates> watchExchangeRates({String baseCurrency = 'INR'}) async* {
     // Get cached data from local storage
     final cachedRates = await local.getExchangeRates();
 
@@ -131,11 +131,15 @@ class DashboardRepositoryImpl implements DashboardRepository {
 
     // Fallback to hardcoded rates if cache not available or base doesn't match
     final rates = {
-      'USD-EUR': 0.92,
-      'USD-GBP': 0.79,
-      'USD-JPY': 149.50,
-      'EUR-USD': 1.09,
-      'GBP-USD': 1.27,
+      'INR-USD': 0.012,
+      'INR-EUR': 0.011,
+      'INR-GBP': 0.0095,
+      'INR-JPY': 1.79,
+      'INR-CAD': 0.016,
+      'INR-AUD': 0.018,
+      'USD-INR': 83.0,
+      'EUR-INR': 90.0,
+      'GBP-INR': 105.0,
     };
 
     return CurrencyRate(

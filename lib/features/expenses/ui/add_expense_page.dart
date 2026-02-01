@@ -2,6 +2,7 @@ import 'package:fintrack/core/extensions/date_time_extension.dart';
 import 'package:fintrack/core/extensions/widget_extensions.dart';
 import 'package:fintrack/features/expenses/ui/providers/add_expense_provider.dart';
 import 'package:fintrack/features/expenses/ui/states/add_expense_state.dart';
+import 'package:fintrack/features/settings/ui/providers/currency_formatter_provider.dart';
 import 'package:fintrack/generated/l10n.dart';
 import 'package:fintrack/routes/app_router.dart';
 import 'package:fintrack/widgets/app_widgets.dart';
@@ -116,7 +117,7 @@ class _AddExpensePageState extends ConsumerState<AddExpensePage> {
               decoration: InputDecoration(
                 labelText: l10n.amount,
                 hintText: l10n.enterAmount,
-                prefixText: r'$ ',
+                prefixText: '${ref.watch(currencyFormatterProvider).symbol} ',
               ),
             ),
 

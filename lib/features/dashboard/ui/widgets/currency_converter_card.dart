@@ -1,6 +1,7 @@
 import 'package:fintrack/core/extensions/context_extensions.dart';
 import 'package:fintrack/features/dashboard/domain/entities/exchange_rates.dart';
 import 'package:fintrack/generated/l10n.dart';
+import 'package:fintrack/routes/app_router.dart';
 import 'package:fintrack/themes/colors.dart';
 import 'package:fintrack/themes/custom_theme.dart';
 import 'package:flutter/material.dart';
@@ -20,10 +21,10 @@ class CurrencyConverterCard extends StatefulWidget {
 
 class _CurrencyConverterCardState extends State<CurrencyConverterCard> {
   final _amountController = TextEditingController(text: '100');
-  String _toCurrency = 'EUR';
+  String _toCurrency = 'USD';
 
   // Common currencies to show at the top of the dropdown
-  static const _popularCurrencies = ['EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF'];
+  static const _popularCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'CNY', 'AED'];
 
   @override
   void dispose() {
@@ -35,7 +36,7 @@ class _CurrencyConverterCardState extends State<CurrencyConverterCard> {
 
   double get _rate => widget.exchangeRates?.getRate(_toCurrency) ?? 1.0;
 
-  String get _baseCurrency => widget.exchangeRates?.baseCurrency ?? 'USD';
+  String get _baseCurrency => widget.exchangeRates?.baseCurrency ?? 'INR';
 
   List<String> get _availableCurrencies {
     final currencies = widget.exchangeRates?.availableCurrencies ?? [];
@@ -237,7 +238,7 @@ class _CurrencyOutputWidget extends StatelessWidget {
         selectedCurrency: currency,
         onSelected: (selected) {
           onCurrencyChanged(selected);
-          Navigator.pop(context);
+          AppRouter.pop();
         },
       ),
     );
@@ -274,9 +275,9 @@ class _CurrencyPickerSheet extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.pop(context),
+                const IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: AppRouter.pop,
                 ),
               ],
             ),
