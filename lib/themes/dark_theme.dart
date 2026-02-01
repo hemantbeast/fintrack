@@ -18,36 +18,35 @@ const _darkColorScheme = ColorScheme.dark(
   onTertiaryContainer: Color(0xFFFFDADA),
   error: errorColor,
   onError: Colors.white,
-  surface: Color(0xFF1B1C1E),
-  onSurface: Color(0xFFE3E2E6),
-  surfaceContainerHighest: Color(0xFF3B3C3E),
-  outline: Color(0xFF5C5D60),
+  surface: darkSurfaceColor,
+  surfaceContainerHighest: darkCardColor,
+  outline: darkBorderColor,
   shadow: Colors.black,
 );
 
 final _darkCustomTheme = CustomTheme(
-  blackWhiteColor: Colors.white70,
-  whiteBlackColor: Colors.black87,
-  whiteBgColor: const Color(0xFF1B1C1E),
-  shimmerBaseColor: Colors.grey.shade900,
-  shimmerHighlightColor: Colors.grey.shade700,
+  blackWhiteColor: darkTextPrimary,
+  whiteBlackColor: darkBackgroundColor,
+  whiteBgColor: darkBackgroundColor,
+  shimmerBaseColor: const Color(0xFF2A2A2A),
+  shimmerHighlightColor: const Color(0xFF3A3A3A),
   navigationTitleStyle: defaultTextStyle(
-    color: Colors.black87,
+    color: Colors.white,
     fontSize: 18,
     fontWeight: FontWeight.w600,
   ),
   blackTextStyle: defaultTextStyle(
-    color: Colors.white70,
+    color: darkTextPrimary,
     fontSize: 14,
     fontWeight: FontWeight.w400,
   ),
   grayTextStyle: defaultTextStyle(
-    color: Colors.grey.shade400,
+    color: darkTextSecondary,
     fontSize: 14,
     fontWeight: FontWeight.w400,
   ),
   lightGrayTextStyle: defaultTextStyle(
-    color: Colors.grey.shade600,
+    color: darkTextMuted,
     fontSize: 14,
     fontWeight: FontWeight.w400,
   ),
@@ -60,6 +59,7 @@ final _darkCustomTheme = CustomTheme(
 
 final darkTheme = ThemeData(
   useMaterial3: false,
+  brightness: Brightness.dark,
   colorScheme: _darkColorScheme,
   extensions: [_darkCustomTheme],
   dividerTheme: DividerThemeData(
@@ -67,10 +67,14 @@ final darkTheme = ThemeData(
     space: 1,
     thickness: 0.75,
   ),
+  scaffoldBackgroundColor: darkBackgroundColor,
+  cardColor: darkCardColor,
   appBarTheme: AppBarTheme(
-    backgroundColor: _darkColorScheme.primary,
-    systemOverlayStyle: SystemUiOverlayStyle.dark,
-    shadowColor: _darkColorScheme.shadow.withValues(alpha: 0.2),
+    backgroundColor: darkSurfaceColor,
+    foregroundColor: darkTextPrimary,
+    systemOverlayStyle: SystemUiOverlayStyle.light,
+    shadowColor: _darkColorScheme.shadow.withValues(alpha: 0.3),
+    elevation: 0,
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
     foregroundColor: _darkColorScheme.onPrimary,
@@ -100,18 +104,18 @@ final darkTheme = ThemeData(
       borderRadius: BorderRadius.circular(10),
     ),
     filled: true,
-    fillColor: gray33,
-    prefixIconColor: _darkColorScheme.onSurface,
-    suffixIconColor: _darkColorScheme.onSurface,
+    fillColor: darkInputColor,
+    prefixIconColor: darkTextSecondary,
+    suffixIconColor: darkTextSecondary,
     contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
     constraints: const BoxConstraints(minHeight: 54),
     hintStyle: defaultTextStyle(
-      color: gray98,
+      color: darkTextMuted,
       fontSize: 16,
       fontWeight: FontWeight.w400,
     ),
     labelStyle: defaultTextStyle(
-      color: _darkColorScheme.onSurface,
+      color: darkTextPrimary,
       fontSize: 16,
       fontWeight: FontWeight.w500,
     ),
@@ -131,7 +135,7 @@ final darkTheme = ThemeData(
     ),
   ),
   dialogTheme: DialogThemeData(
-    backgroundColor: _darkColorScheme.onPrimary,
+    backgroundColor: darkSurfaceColor,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10),
     ),
@@ -141,10 +145,25 @@ final darkTheme = ThemeData(
     thumbColor: WidgetStatePropertyAll(_darkColorScheme.secondary),
   ),
   bottomSheetTheme: const BottomSheetThemeData(
+    backgroundColor: darkSurfaceColor,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadiusGeometry.vertical(
         top: Radius.circular(15),
       ),
     ),
+  ),
+  cardTheme: CardThemeData(
+    color: darkCardColor,
+    elevation: 2,
+    shadowColor: Colors.black.withValues(alpha: 0.3),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(12)),
+    ),
+  ),
+  listTileTheme: const ListTileThemeData(
+    tileColor: darkCardColor,
+    selectedTileColor: darkInputColor,
+    iconColor: darkTextSecondary,
+    textColor: darkTextPrimary,
   ),
 );

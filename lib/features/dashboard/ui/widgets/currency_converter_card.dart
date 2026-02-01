@@ -41,7 +41,7 @@ class _CurrencyConverterCardState extends ConsumerState<CurrencyConverterCard> {
     return settingsState.screenData.when(
       data: (data) => data.preferences.currency,
       loading: () => 'INR',
-      error: (_, __) => 'INR',
+      error: (_, _) => 'INR',
     );
   }
 
@@ -58,12 +58,16 @@ class _CurrencyConverterCardState extends ConsumerState<CurrencyConverterCard> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.theme.brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: context.theme.cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: grayF5),
+        border: Border.all(
+          color: isDark ? darkBorderColor : converterBorderLight,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,11 +89,11 @@ class _CurrencyConverterCardState extends ConsumerState<CurrencyConverterCard> {
                   onChanged: (_) => setState(() {}),
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Icon(
                   Icons.arrow_forward,
-                  color: gray98,
+                  color: isDark ? darkTextSecondary : converterTextSecondaryLight,
                   size: 20,
                 ),
               ),
@@ -124,10 +128,12 @@ class _CurrencyInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.theme.brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: grayF9,
+        color: isDark ? converterBackgroundDark : converterBackgroundLight,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -137,7 +143,7 @@ class _CurrencyInputField extends StatelessWidget {
           Text(
             label,
             style: defaultTextStyle(
-              color: gray98,
+              color: isDark ? darkTextSecondary : converterTextSecondaryLight,
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
@@ -152,7 +158,7 @@ class _CurrencyInputField extends StatelessWidget {
                 FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
               ],
               style: semiboldTextStyle(
-                color: gray33,
+                color: isDark ? darkTextPrimary : converterTextPrimaryLight,
                 fontSize: 16,
               ),
               decoration: const InputDecoration(
@@ -184,10 +190,12 @@ class _CurrencyOutputWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.theme.brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: grayF9,
+        color: isDark ? converterBackgroundDark : converterBackgroundLight,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -201,15 +209,15 @@ class _CurrencyOutputWidget extends StatelessWidget {
                 Text(
                   currency,
                   style: defaultTextStyle(
-                    color: gray98,
+                    color: isDark ? darkTextSecondary : converterTextSecondaryLight,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
                 const SizedBox(width: 4),
-                const Icon(
+                Icon(
                   Icons.keyboard_arrow_down,
-                  color: gray98,
+                  color: isDark ? darkTextSecondary : converterTextSecondaryLight,
                   size: 16,
                 ),
               ],
@@ -219,7 +227,7 @@ class _CurrencyOutputWidget extends StatelessWidget {
           Text(
             value,
             style: semiboldTextStyle(
-              color: gray33,
+              color: isDark ? darkTextPrimary : converterTextPrimaryLight,
               fontSize: 16,
             ),
           ),
@@ -257,6 +265,8 @@ class _CurrencyPickerSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.theme.brightness == Brightness.dark;
+
     return SafeArea(
       child: DraggableScrollableSheet(
         initialChildSize: 0.6,
@@ -289,22 +299,33 @@ class _CurrencyPickerSheet extends StatelessWidget {
                       leading: Container(
                         width: 48,
                         height: 48,
+                        alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: isSelected ? primaryColor.withValues(alpha: 0.1) : grayF5,
+                          color: isSelected
+                              ? primaryColor.withValues(alpha: 0.1)
+                              : (isDark ? converterSymbolBackgroundDark : converterSymbolBackgroundLight),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Center(
-                          child: Text(
-                            currency.symbol,
-                            style: semiboldTextStyle(
-                              color: isSelected ? primaryColor : gray98,
-                              fontSize: 18,
-                            ),
+                        child: Text(
+                          currency.symbol,
+                          style: semiboldTextStyle(
+                            color: isSelected ? primaryColor : (isDark ? darkTextSecondary : converterTextSecondaryLight),
+                            fontSize: 18,
                           ),
                         ),
                       ),
-                      title: Text(currency.code),
-                      subtitle: Text(currency.name),
+                      title: Text(
+                        currency.code,
+                        style: TextStyle(
+                          color: isDark ? darkTextPrimary : converterTextPrimaryLight,
+                        ),
+                      ),
+                      subtitle: Text(
+                        currency.name,
+                        style: TextStyle(
+                          color: isDark ? darkTextSecondary : converterTextSecondaryLight,
+                        ),
+                      ),
                       trailing: isSelected ? const Icon(Icons.check, color: primaryColor) : null,
                       onTap: () => onSelected(currency.code),
                     );

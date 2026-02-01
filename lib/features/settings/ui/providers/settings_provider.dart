@@ -66,6 +66,15 @@ class SettingsNotifier extends Notifier<SettingsState> {
     _preferencesSubscription = repository.watchPreferences().listen(
       (preferences) {
         _latestPreferences = preferences;
+
+        // Apply saved theme when preferences are loaded
+        final mode = switch (preferences.theme) {
+          ThemeOption.light => ThemeMode.light,
+          ThemeOption.dark => ThemeMode.dark,
+          ThemeOption.system => ThemeMode.system,
+        };
+        ref.read(themeProvider.notifier).updateMode(mode);
+
         _updateState();
 
         // Refresh exchange rates when currency changes

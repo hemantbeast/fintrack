@@ -56,8 +56,11 @@ final _lightCustomTheme = CustomTheme(
 
 final lightTheme = ThemeData(
   useMaterial3: false,
+  brightness: Brightness.light,
   colorScheme: _lightColorScheme,
   extensions: [_lightCustomTheme],
+  scaffoldBackgroundColor: backgroundColor,
+  cardColor: Colors.white,
   dividerTheme: DividerThemeData(
     color: _lightColorScheme.outline,
     space: 1,
@@ -65,8 +68,10 @@ final lightTheme = ThemeData(
   ),
   appBarTheme: AppBarTheme(
     backgroundColor: _lightColorScheme.primary,
+    foregroundColor: Colors.white,
     systemOverlayStyle: SystemUiOverlayStyle.light,
     shadowColor: _lightColorScheme.shadow.withValues(alpha: 0.2),
+    elevation: 0,
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
     foregroundColor: _lightColorScheme.onPrimary,
@@ -127,7 +132,7 @@ final lightTheme = ThemeData(
     ),
   ),
   dialogTheme: DialogThemeData(
-    backgroundColor: _lightColorScheme.onPrimary,
+    backgroundColor: Colors.white,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10),
     ),
@@ -137,10 +142,26 @@ final lightTheme = ThemeData(
     thumbColor: WidgetStatePropertyAll(_lightColorScheme.secondary),
   ),
   bottomSheetTheme: const BottomSheetThemeData(
+    backgroundColor: Colors.white,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadiusGeometry.vertical(
-        top: Radius.circular(15),
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(15),
+        topRight: Radius.circular(15),
       ),
     ),
+  ),
+  cardTheme: CardThemeData(
+    color: Colors.white,
+    elevation: 2,
+    shadowColor: Colors.black.withValues(alpha: 0.1),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+  ),
+  listTileTheme: const ListTileThemeData(
+    tileColor: Colors.white,
+    selectedTileColor: grayF5,
+    iconColor: gray98,
+    textColor: textColor,
   ),
 );

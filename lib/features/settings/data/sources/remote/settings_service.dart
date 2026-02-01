@@ -2,6 +2,7 @@ import 'package:fintrack/core/utils/json_utils.dart';
 import 'package:fintrack/features/settings/data/mock/mock_data.dart';
 import 'package:fintrack/features/settings/data/models/user_preferences_model.dart';
 import 'package:fintrack/features/settings/data/models/user_profile_model.dart';
+import 'package:fintrack/features/settings/data/sources/local/settings_local.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final settingsServiceProvider = Provider<SettingsService>((ref) {
@@ -26,8 +27,19 @@ class SettingsService {
   }
 
   /// Fetches user preferences from API
+  /// Returns locally saved preferences to persist user changes in mock mode
   Future<UserPreferencesModel> getPreferences() async {
     await Future<void>.delayed(const Duration(milliseconds: 200));
+
+    // In mock mode, return locally saved preferences if available
+    // This simulates a real API that returns the user's saved settings
+    final local = ref.read(settingsLocalProvider);
+    final cached = await local.getPreferences();
+    if (cached != null) {
+      return cached;
+    }
+
+    // Fall back to mock data on first launch
     return JsonUtils.parseJson(
       userPreferencesMockJson,
       UserPreferencesModel.fromJson,
