@@ -126,5 +126,21 @@ final lightTheme = ThemeData(
       ),
     ),
   ),
-  dialogTheme: DialogThemeData(backgroundColor: _lightColorScheme.onPrimary),
+  dialogTheme: DialogThemeData(
+    backgroundColor: _lightColorScheme.onPrimary,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+  ),
+  switchTheme: SwitchThemeData(
+    trackColor: WidgetStatePropertyAll(_lightColorScheme.secondaryContainer),
+    thumbColor: WidgetStatePropertyAll(_lightColorScheme.secondary),
+  ),
+  bottomSheetTheme: const BottomSheetThemeData(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadiusGeometry.vertical(
+        top: Radius.circular(15),
+      ),
+    ),
+  ),
 );

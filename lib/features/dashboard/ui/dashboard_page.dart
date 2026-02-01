@@ -29,7 +29,9 @@ class DashboardPage extends ConsumerWidget {
         ),
         leading: IconButton(
           icon: const Icon(Icons.account_circle_outlined, color: Colors.white),
-          onPressed: () {},
+          onPressed: () {
+            AppRouter.pushNamed(RouteEnum.settingsScreen.name);
+          },
         ),
         actions: [
           IconButton(
@@ -37,12 +39,6 @@ class DashboardPage extends ConsumerWidget {
             onPressed: () {},
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          AppRouter.pushNamed(RouteEnum.addExpenseScreen.name);
-        },
-        child: const Icon(Icons.add),
       ),
       body: provider.screenData.when(
         data: (data) {
@@ -52,7 +48,7 @@ class DashboardPage extends ConsumerWidget {
             },
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 70),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 spacing: 20,
                 crossAxisAlignment: CrossAxisAlignment.start,

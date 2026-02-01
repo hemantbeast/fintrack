@@ -6,6 +6,7 @@ import 'package:fintrack/features/dashboard/ui/all_transactions_page.dart';
 import 'package:fintrack/features/dashboard/ui/dashboard_page.dart';
 import 'package:fintrack/features/expenses/ui/add_expense_page.dart';
 import 'package:fintrack/features/onboarding/onboarding_page.dart';
+import 'package:fintrack/features/settings/ui/settings_page.dart';
 import 'package:fintrack/features/splash/ui/splash_page.dart';
 import 'package:fintrack/routes/route_enum.dart';
 import 'package:go_router/go_router.dart';
@@ -94,6 +95,18 @@ class AppRoutes with BaseRoutes {
           key: state.pageKey,
           name: RouteEnum.addBudgetScreen.name,
           child: AddBudgetPage(budget: budget),
+        );
+      },
+    ),
+    /* Settings */
+    GoRoute(
+      path: RouteEnum.settingsScreen.path,
+      name: RouteEnum.settingsScreen.name,
+      pageBuilder: (context, state) {
+        return buildMaterialPage(
+          key: state.pageKey,
+          name: RouteEnum.settingsScreen.name,
+          child: const SettingsPage(),
         );
       },
     ),

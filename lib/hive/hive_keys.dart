@@ -19,7 +19,9 @@ enum HiveBoxes {
   transactions(boxName: 'transactions', key: 'TransactionsKey'),
   budgets(boxName: 'budgets', key: 'BudgetsKey'),
   categories(boxName: 'categories', key: 'CategoriesKey'),
-  exchangeRates(boxName: 'exchange_rates', key: 'ExchangeRatesKey')
+  exchangeRates(boxName: 'exchange_rates', key: 'ExchangeRatesKey'),
+  userProfile(boxName: 'user_profile', key: 'UserProfileKey'),
+  userPreferences(boxName: 'user_preferences', key: 'UserPreferencesKey'),
   ;
 
   const HiveBoxes({required this.boxName, this.key = ''});

@@ -130,5 +130,21 @@ final darkTheme = ThemeData(
       ),
     ),
   ),
-  dialogTheme: DialogThemeData(backgroundColor: _darkColorScheme.onPrimary),
+  dialogTheme: DialogThemeData(
+    backgroundColor: _darkColorScheme.onPrimary,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+  ),
+  switchTheme: SwitchThemeData(
+    trackColor: WidgetStatePropertyAll(_darkColorScheme.secondaryContainer),
+    thumbColor: WidgetStatePropertyAll(_darkColorScheme.secondary),
+  ),
+  bottomSheetTheme: const BottomSheetThemeData(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadiusGeometry.vertical(
+        top: Radius.circular(15),
+      ),
+    ),
+  ),
 );
