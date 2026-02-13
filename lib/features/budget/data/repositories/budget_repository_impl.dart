@@ -28,7 +28,8 @@ class BudgetRepositoryImpl implements BudgetRepository {
     // Get cached data from local storage
     final cachedBudgets = await local.getBudgets();
 
-    if (cachedBudgets != null) {
+    // Yield cached data if available (non-empty)
+    if (cachedBudgets != null && cachedBudgets.isNotEmpty) {
       yield cachedBudgets.map((m) => m.toEntity()).toList();
     }
 
@@ -41,7 +42,7 @@ class BudgetRepositoryImpl implements BudgetRepository {
       yield freshBudgets.map((m) => m.toEntity()).toList();
     } on Exception catch (_) {
       // Throw error if fetching fails and no cached data
-      if (cachedBudgets == null) {
+      if (cachedBudgets == null || cachedBudgets.isEmpty) {
         rethrow;
       }
     }
@@ -50,7 +51,7 @@ class BudgetRepositoryImpl implements BudgetRepository {
   /// Save or update a budget
   @override
   Future<void> saveBudget(Budget budget) async {
-    final model =BudgetModel.fromEntity(budget);
+    final model = BudgetModel.fromEntity(budget);
     await local.saveBudget(model);
 
     // TODO: Sync with API when API is implemented
